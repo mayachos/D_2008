@@ -4,7 +4,7 @@ class DynamicLinkService {
   Future<Uri> createDynamicLink() async {
     final DynamicLinkParameters parameters = DynamicLinkParameters(
       uriPrefix: 'https://reasobi.page.link',
-      link: Uri.parse('https://your.url.com'),
+      link: Uri.parse('https://reasobi.page.link.com'),
       androidParameters: AndroidParameters(
         packageName: 'com.monapk.d_2008',
         minimumVersion: 1,
