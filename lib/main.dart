@@ -1,6 +1,7 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:d_2008/firebase/dynamic_link/dynamic_link_service.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:share/share.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -14,38 +15,38 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-      ),
-      home: Scaffold(
-        body: TestList(),
-      ),
+      home: HomePage(),
     );
   }
 }
 
-class TestList extends StatelessWidget {
+class HomePage extends StatelessWidget {
+  final DynamicLinkService _dynamicLinkService = DynamicLinkService();
+
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<QuerySnapshot>(
-      stream: Firestore.instance.collection('test').snapshots(),
-      builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-        if (snapshot.hasError) return new Text('Error: ${snapshot.error}');
-        switch (snapshot.connectionState) {
-          case ConnectionState.waiting:
-            return new Text('Loading...');
-          default:
-            return new ListView(
-              children: snapshot.data.documents.map((DocumentSnapshot document) {
-                return new ListTile(
-                  title: new Text(document['title']),
-                  subtitle: new Text(document['content']),
+    return Scaffold(
+      body: Center(
+        child: Container(
+          height: 50,
+          width: 100,
+          child: FutureBuilder<Uri>(
+            future: _dynamicLinkService.createDynamicLink(),
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                Uri uri = snapshot.data;
+                return FlatButton(
+                  color: Colors.amber,
+                  onPressed: () => Share.share(uri.toString()),
+                  child: Text('Share'),
                 );
-              }).toList(),
-            );
-        }
-      },
+              } else {
+                return Container();
+              }
+            },
+          ),
+        ),
+      ),
     );
   }
 }
