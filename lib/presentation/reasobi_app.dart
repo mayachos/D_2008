@@ -41,6 +41,11 @@ class _ReasobiAppState extends State<ReasobiApp> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("REASOBI"),
+      ),
+      body: Container(),
+    );
   }
 }
