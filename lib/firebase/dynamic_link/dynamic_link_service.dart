@@ -1,6 +1,25 @@
 import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
+import 'package:flutter/material.dart';
 
 class DynamicLinkService {
+  Future<void> retrieveDynamicLink(BuildContext context) async {
+    try {
+      final PendingDynamicLinkData data = await FirebaseDynamicLinks.instance.getInitialLink();
+      final Uri deepLink = data?.link;
+
+      // TODO: implementation
+      if (deepLink != null) {
+        debugPrint("Open Dynamic Link: $deepLink");
+      }
+
+      FirebaseDynamicLinks.instance.onLink(onSuccess: (PendingDynamicLinkData dynamicLink) async {
+        debugPrint("Open Dynamic Link: $dynamicLink");
+      });
+    } catch (e) {
+      debugPrint(e.toString());
+    }
+  }
+
   Future<Uri> createDynamicLink() async {
     final DynamicLinkParameters parameters = DynamicLinkParameters(
       uriPrefix: 'https://reasobi.page.link',
