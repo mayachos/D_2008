@@ -13,7 +13,7 @@ class HomeScreen extends StatelessWidget {
           height: 50,
           width: 100,
           child: FutureBuilder<Uri>(
-            future: _dynamicLinkService.createDynamicLink(),
+            future: _dynamicLinkService.createInviteDynamicLink(),
             builder: (context, snapshot) {
               if (snapshot.hasData) {
                 Uri uri = snapshot.data;
