@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:d_2008/firebase/dynamic_link/dynamic_link_service.dart';
+import 'package:d_2008/presentation/screen/home_screen.dart';
 import 'package:flutter/material.dart';
 
 class ReasobiApp extends StatefulWidget {
@@ -41,11 +42,12 @@ class _ReasobiAppState extends State<ReasobiApp> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("REASOBI"),
+    return MaterialApp(
+      title: 'Flutter Demo',
+      theme: ThemeData(
+        visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      body: Container(),
+      home: HomeScreen(),
     );
   }
 }
