@@ -9,11 +9,11 @@ class DynamicLinkService {
 
       // TODO: implementation
       if (deepLink != null) {
-        debugPrint("Open Dynamic Link: $deepLink");
+        debugPrint("Open Deep Link: $deepLink");
       }
 
       FirebaseDynamicLinks.instance.onLink(onSuccess: (PendingDynamicLinkData dynamicLink) async {
-        debugPrint("Open Dynamic Link: $dynamicLink");
+        debugPrint("Open Dynamic Link: ${dynamicLink.link}");
       });
     } catch (e) {
       debugPrint(e.toString());
