@@ -27,6 +27,8 @@ class DynamicLinkService {
       androidParameters: AndroidParameters(
         packageName: 'com.monapk.d_2008',
         minimumVersion: 1,
+        // TODO: アプリDLサイトへ変更
+        fallbackUrl: Uri.parse('https://twitter.com/home'),
       ),
       // TODO: iOS
       iosParameters: IosParameters(
