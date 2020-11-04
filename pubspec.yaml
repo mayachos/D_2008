@@ -37,6 +37,9 @@ dependencies:
   # get_it
   get_it: ^5.0.1
 
+  # flutter_signin_button
+  flutter_signin_button: ^1.1.0
+
   share: ^0.6.4+3
 
 dev_dependencies:
