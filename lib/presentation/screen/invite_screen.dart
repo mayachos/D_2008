@@ -1,3 +1,4 @@
+import 'package:d_2008/model/request/twitter_request.dart';
 import 'package:flutter/material.dart';
 
 class InviteScreen extends StatefulWidget {
@@ -52,7 +53,9 @@ class _InviteScreenState extends State<InviteScreen> {
       ),
       floatingActionButton: true
           ? FloatingActionButton(
-              onPressed: () {},
+              onPressed: () {
+                TwitterRequest().postTweet();
+              },
               child: Icon(Icons.check),
               backgroundColor: Color.fromRGBO(0, 150, 136, 1.0),
             )
