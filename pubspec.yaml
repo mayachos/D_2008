@@ -34,6 +34,9 @@ dependencies:
   cloud_firestore: ^0.14.2
   firebase_dynamic_links: ^0.6.1
 
+  # get_it
+  get_it: ^5.0.1
+
   share: ^0.6.4+3
 
 dev_dependencies:
