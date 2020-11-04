@@ -1,6 +1,10 @@
+import 'dart:async';
+import 'dart:io';
+
 import 'package:d_2008/di/get_it.dart';
 import 'package:d_2008/presentation/screen/home_screen.dart';
 import 'package:d_2008/presentation/screen/twitter_login_screen.dart';
+import 'package:d_2008/presentation/transition/fade_route.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_twitter_login/flutter_twitter_login.dart';
@@ -44,11 +48,10 @@ class SplashScreen extends StatelessWidget {
       _auth.signInWithCredential(credential).then((user) {
         debugPrint("ログイン成功");
         getItInstance.registerFactory<User>(() => user.user);
+        sleep(Duration(milliseconds: 1500));
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(
-            builder: (BuildContext _) => HomeScreen(),
-          ),
+          FadeRoute(page: HomeScreen()),
         );
         return;
       });
@@ -56,11 +59,10 @@ class SplashScreen extends StatelessWidget {
       prefs.remove(twitterAccessToken);
       prefs.remove(twitterSecret);
       debugPrint("ログイン失敗");
+      sleep(Duration(milliseconds: 1500));
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(
-          builder: (BuildContext _) => TwitterLoginScreen(),
-        ),
+        FadeRoute(page: TwitterLoginScreen()),
       );
     }
   }
