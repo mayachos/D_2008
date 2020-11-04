@@ -45,6 +45,18 @@ dependencies:
   flutter_twitter_login: ^1.1.0
   twitter_login: ^2.0.0
 
+  # flutter_webview_plugin
+  flutter_webview_plugin: ^0.3.10+1
+
+  # oauth1
+  oauth1: ^1.0.4
+
+  # http
+  http: ^0.12.2
+
+  # shared_preferences
+  shared_preferences: ^0.5.12+4
+
   share: ^0.6.4+3
 
 dev_dependencies:
