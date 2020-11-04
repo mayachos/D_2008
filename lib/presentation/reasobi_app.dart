@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:d_2008/firebase/dynamic_link/dynamic_link_service.dart';
-import 'package:d_2008/presentation/screen/home_screen.dart';
+import 'package:d_2008/presentation/screen/splash_screen.dart';
 import 'package:flutter/material.dart';
 
 class ReasobiApp extends StatefulWidget {
@@ -47,7 +47,7 @@ class _ReasobiAppState extends State<ReasobiApp> with WidgetsBindingObserver {
       theme: ThemeData(
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: HomeScreen(),
+      home: SplashScreen(),
     );
   }
 }
