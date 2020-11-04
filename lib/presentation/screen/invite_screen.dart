@@ -15,6 +15,13 @@ class _InviteScreenState extends State<InviteScreen> {
       body: SafeArea(
         child: Container(),
       ),
+      floatingActionButton: true
+          ? FloatingActionButton(
+              onPressed: () {},
+              child: Icon(Icons.check),
+              backgroundColor: Color.fromRGBO(0, 150, 136, 1.0),
+            )
+          : null,
     );
   }
 }
