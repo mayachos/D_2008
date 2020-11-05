@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:d_2008/di/get_it.dart';
+import 'package:d_2008/firebase/dynamic_link/dynamic_link_service.dart';
+import 'package:d_2008/model/request/twitter_request.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -94,8 +96,12 @@ class _InviteScreenState extends State<InviteScreen> {
                   'expulsionUserUid': [],
                   'isOpen': true,
                   'isClosed': false,
-                }).then((value) {
-                  print(value);
+                }).then((DocumentReference ref) {
+                  debugPrint("id: ${ref.path.split("/").last}");
+                  DynamicLinkService().createInviteDynamicLink(inviteId: ref.path.split("/").last).then((dynamicLink) {
+                    debugPrint(dynamicLink.toString());
+                    TwitterRequest().postTweet(dynamicLink.toString());
+                  });
                 }).catchError((error) => print("Failed to add user: $error"));
               },
               child: Icon(Icons.check),
