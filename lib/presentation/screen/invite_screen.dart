@@ -71,9 +71,9 @@ class _InviteScreenState extends State<InviteScreen> {
                 DocumentReference userRef = FirebaseFirestore.instance.collection('users').doc(userInfo.uid);
                 debugPrint(currentUser.providerData.toString());
 
-                String title = "タイトル";
-                String detail = "詳細";
-                String target = "誰でも";
+                String title = titleController.text;
+                String detail = detailController.text;
+                String target = targetController.text;
 
                 invitesRef.add({
                   'ownerId': userInfo.uid,
@@ -83,7 +83,14 @@ class _InviteScreenState extends State<InviteScreen> {
                   'detail': detail,
                   'target': target,
                   'participantsRef': [userRef],
-                  "participantsUid": [userInfo.uid],
+                  'participantsUid': [userInfo.uid],
+                  'usersInfo': [
+                    {
+                      "uid": userInfo.uid,
+                      "displayName": userInfo.displayName,
+                      "photoURL": userInfo.photoURL,
+                    }
+                  ],
                   'expulsionUserUid': [],
                   'isOpen': true,
                   'isClosed': false,
