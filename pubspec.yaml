@@ -63,6 +63,10 @@ dependencies:
   # adobe_xd
   adobe_xd: ^1.0.0+1
 
+  # fluttertoast
+  fluttertoast: ^7.1.1
+
+
   share: ^0.6.4+3
 
 dev_dependencies:
