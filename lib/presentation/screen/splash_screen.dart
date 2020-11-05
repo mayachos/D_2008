@@ -30,7 +30,15 @@ class SplashScreen extends StatelessWidget {
           children: <Widget>[
             Center(
               child: Container(
-                color: Colors.blueAccent,
+                color: Colors.white,
+                child: Center(
+                  child: Image.asset(
+                    "assets/images/logo2.png",
+                    width: 250.0,
+                    height: 250.0,
+                    fit: BoxFit.fill,
+                  ),
+                ),
               ),
             ),
           ],
