@@ -35,7 +35,7 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  // 参加者の
+  // 参加している募集をリストで取得する
   Future<void> fetchInvites() async {
     final User currentUser = getItInstance.get<User>();
     final UserInfo userInfo = currentUser.providerData.first;
