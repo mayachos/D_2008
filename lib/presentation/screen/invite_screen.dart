@@ -64,7 +64,31 @@ class _InviteScreenState extends State<InviteScreen> {
       floatingActionButton: true
           ? FloatingActionButton(
               onPressed: () {
-                TwitterRequest().postTweet();
+                // TODO: loadingの実装
+                final User currentUser = getItInstance.get<User>();
+                final UserInfo userInfo = currentUser.providerData.first;
+                CollectionReference invitesRef = FirebaseFirestore.instance.collection('invites');
+                DocumentReference userRef = FirebaseFirestore.instance.collection('users').doc(userInfo.uid);
+                debugPrint(currentUser.providerData.toString());
+
+                String title = "タイトル";
+                String detail = "詳細";
+                String target = "誰でも";
+
+                invitesRef.add({
+                  'ownerId': userInfo.uid,
+                  'ownerName': userInfo.displayName,
+                  'ownerPhotoURL': userInfo.photoURL,
+                  'title': title,
+                  'detail': detail,
+                  'target': target,
+                  'participantsRef': [userRef],
+                  "participantsUid": [userInfo.uid],
+                  'isOpen': true,
+                  'isClosed': false,
+                }).then((value) {
+                  print(value);
+                }).catchError((error) => print("Failed to add user: $error"));
               },
               child: Icon(Icons.check),
               backgroundColor: Color.fromRGBO(0, 150, 136, 1.0),
