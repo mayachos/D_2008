@@ -1,4 +1,5 @@
 import 'package:d_2008/presentation/reasobi_app.dart';
+import 'package:d_2008/presentation/screen/home_screen.dart';
 import 'package:d_2008/presentation/widget/invite_list_view.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -18,8 +19,9 @@ void main() async {
       visualDensity: VisualDensity.adaptivePlatformDensity,
     ),
     routes: <String, WidgetBuilder>{
-      '/invite': (BuildContext context) => InviteListView(),
       '/': (BuildContext context) => ReasobiApp(),
+      '/home': (BuildContext context) => HomeScreen(),
+      '/invite': (BuildContext context) => InviteListView(),
     },
   ));
 }

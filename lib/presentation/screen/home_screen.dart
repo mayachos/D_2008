@@ -5,6 +5,7 @@ import 'package:d_2008/presentation/screen/invite_screen.dart';
 import 'package:d_2008/presentation/transition/fade_route.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -20,11 +21,16 @@ class _HomeScreenState extends State<HomeScreen> {
         title: Text("REASOBI"),
       ),
       body: SafeArea(
-        child: Container(
-          child: SingleChildScrollView(
-            // TODO: Change List View
-            child: Container(),
+        child: WillPopScope(
+          child: Container(
+            child: SingleChildScrollView(
+              // TODO: Change List View
+              child: Container(),
+            ),
           ),
+          onWillPop: () {
+            return SystemChannels.platform.invokeMethod('SystemNavigator.pop');
+          },
         ),
       ),
       floatingActionButton: FloatingActionButton(

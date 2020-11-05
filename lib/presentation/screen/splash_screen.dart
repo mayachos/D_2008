@@ -3,8 +3,6 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:d_2008/di/get_it.dart';
-import 'package:d_2008/presentation/screen/home_screen.dart';
-import 'package:d_2008/presentation/screen/invite_screen.dart';
 import 'package:d_2008/presentation/screen/twitter_login_screen.dart';
 import 'package:d_2008/presentation/transition/fade_route.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -57,6 +55,7 @@ class SplashScreen extends StatelessWidget {
       );
       _auth.signInWithCredential(credential).then((user) {
         debugPrint("ログイン成功");
+        prefs.setBool(loggedIn, true);
         User currentUser = user.user;
         UserInfo userInfo = currentUser.providerData.first;
         DocumentReference userRef = FirebaseFirestore.instance.collection('users').doc(userInfo.uid);
@@ -66,22 +65,7 @@ class SplashScreen extends StatelessWidget {
         };
         userRef.update(data).then((value) async {
           getItInstance.registerFactory<User>(() => currentUser);
-          await Future.delayed(Duration(seconds: 2));
-          String inviteId = prefs.getString(inviteKey);
-          debugPrint("UserFetch: $inviteId");
-          if (inviteId != null && inviteId.isNotEmpty) {
-            prefs.remove(inviteKey);
-            Navigator.pushReplacement(
-              context,
-              FadeRoute(page: InviteScreen()),
-            );
-          } else {
-            prefs.remove(inviteKey);
-            Navigator.pushReplacement(
-              context,
-              FadeRoute(page: HomeScreen()),
-            );
-          }
+          Navigator.pushNamed(context, '/home');
         });
         return;
       });

@@ -20,12 +20,21 @@ class _ReasobiAppState extends State<ReasobiApp> {
   void initDynamicLinks() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.remove(inviteKey);
+    prefs.remove(loggedIn);
     FirebaseDynamicLinks.instance.onLink(onSuccess: (PendingDynamicLinkData dynamicLink) async {
       final Uri deepLink = dynamicLink?.link;
 
       if (deepLink != null) {
-        String invitedId = deepLink.queryParameters["id"];
-        prefs.setString(inviteKey, invitedId);
+        await Future.delayed(Duration(seconds: 4));
+        bool isLoggedIn = prefs.getBool(loggedIn);
+        if (isLoggedIn == null) {
+          isLoggedIn = false;
+        }
+        if (isLoggedIn) {
+          String invitedId = deepLink.queryParameters["id"];
+          prefs.setString(inviteKey, invitedId);
+          Navigator.pushNamed(context, "/invite");
+        }
       }
     }, onError: (OnLinkErrorException e) async {
       print('onLinkError');
@@ -36,9 +45,16 @@ class _ReasobiAppState extends State<ReasobiApp> {
     final Uri deepLink = data?.link;
 
     if (deepLink != null) {
-      Navigator.pushNamed(context, deepLink.path);
-      final String invitedId = deepLink.queryParameters["id"];
-      prefs.setString(inviteKey, invitedId);
+      await Future.delayed(Duration(seconds: 4));
+      bool isLoggedIn = prefs.getBool(loggedIn);
+      if (isLoggedIn == null) {
+        isLoggedIn = false;
+      }
+      if (isLoggedIn) {
+        final String invitedId = deepLink.queryParameters["id"];
+        prefs.setString(inviteKey, invitedId);
+        Navigator.pushNamed(context, '/invite');
+      }
     }
   }
 
