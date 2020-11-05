@@ -84,6 +84,7 @@ class _InviteScreenState extends State<InviteScreen> {
                   'target': target,
                   'participantsRef': [userRef],
                   "participantsUid": [userInfo.uid],
+                  'expulsionUserUid': [],
                   'isOpen': true,
                   'isClosed': false,
                 }).then((value) {
