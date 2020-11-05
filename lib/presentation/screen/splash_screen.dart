@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:d_2008/di/get_it.dart';
 import 'package:d_2008/presentation/screen/home_screen.dart';
+import 'package:d_2008/presentation/screen/invite_screen.dart';
 import 'package:d_2008/presentation/screen/twitter_login_screen.dart';
 import 'package:d_2008/presentation/transition/fade_route.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -48,7 +49,7 @@ class SplashScreen extends StatelessWidget {
   }
 
   Future<void> logInWithTwitter(BuildContext context) async {
-    final SharedPreferences prefs = await getItInstance.getAsync<SharedPreferences>();
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
     try {
       final AuthCredential credential = TwitterAuthProvider.credential(
         accessToken: prefs.getString(twitterAccessToken),
@@ -63,13 +64,24 @@ class SplashScreen extends StatelessWidget {
           "displayName": userInfo.displayName,
           "photoURL": userInfo.photoURL,
         };
-        userRef.update(data).then((value) {
-          sleep(Duration(milliseconds: 1000));
+        userRef.update(data).then((value) async {
           getItInstance.registerFactory<User>(() => currentUser);
-          Navigator.pushReplacement(
-            context,
-            FadeRoute(page: HomeScreen()),
-          );
+          await Future.delayed(Duration(seconds: 2));
+          String inviteId = prefs.getString(inviteKey);
+          debugPrint("UserFetch: $inviteId");
+          if (inviteId != null && inviteId.isNotEmpty) {
+            prefs.remove(inviteKey);
+            Navigator.pushReplacement(
+              context,
+              FadeRoute(page: InviteScreen()),
+            );
+          } else {
+            prefs.remove(inviteKey);
+            Navigator.pushReplacement(
+              context,
+              FadeRoute(page: HomeScreen()),
+            );
+          }
         });
         return;
       });

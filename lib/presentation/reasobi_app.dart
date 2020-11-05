@@ -1,53 +1,51 @@
-import 'dart:async';
-
-import 'package:d_2008/firebase/dynamic_link/dynamic_link_service.dart';
 import 'package:d_2008/presentation/screen/splash_screen.dart';
+import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import '../constants.dart';
 
 class ReasobiApp extends StatefulWidget {
   @override
   _ReasobiAppState createState() => _ReasobiAppState();
 }
 
-class _ReasobiAppState extends State<ReasobiApp> with WidgetsBindingObserver {
-  final DynamicLinkService _dynamicLinkService = DynamicLinkService();
-  Timer _timerLink;
-
+class _ReasobiAppState extends State<ReasobiApp> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addObserver(this);
+    this.initDynamicLinks();
   }
 
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed) {
-      _timerLink = new Timer(
-        const Duration(milliseconds: 1000),
-        () {
-          _dynamicLinkService.retrieveDynamicLink(context);
-        },
-      );
-    }
-  }
+  void initDynamicLinks() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.remove(inviteKey);
+    FirebaseDynamicLinks.instance.onLink(onSuccess: (PendingDynamicLinkData dynamicLink) async {
+      final Uri deepLink = dynamicLink?.link;
 
-  @override
-  void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
-    if (_timerLink != null) {
-      _timerLink.cancel();
+      if (deepLink != null) {
+        String invitedId = deepLink.queryParameters["id"];
+        prefs.setString(inviteKey, invitedId);
+      }
+    }, onError: (OnLinkErrorException e) async {
+      print('onLinkError');
+      print(e.message);
+    });
+
+    final PendingDynamicLinkData data = await FirebaseDynamicLinks.instance.getInitialLink();
+    final Uri deepLink = data?.link;
+
+    if (deepLink != null) {
+      Navigator.pushNamed(context, deepLink.path);
+      final String invitedId = deepLink.queryParameters["id"];
+      prefs.setString(inviteKey, invitedId);
     }
-    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-      ),
-      home: SplashScreen(),
+    return Scaffold(
+      body: SplashScreen(),
     );
   }
 }

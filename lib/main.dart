@@ -1,4 +1,5 @@
 import 'package:d_2008/presentation/reasobi_app.dart';
+import 'package:d_2008/presentation/widget/invite_list_view.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:pedantic/pedantic.dart';
@@ -11,5 +12,14 @@ void main() async {
 
   unawaited(getIt.init());
 
-  runApp(ReasobiApp());
+  runApp(MaterialApp(
+    title: "REASOBI",
+    theme: ThemeData(
+      visualDensity: VisualDensity.adaptivePlatformDensity,
+    ),
+    routes: <String, WidgetBuilder>{
+      '/invite': (BuildContext context) => InviteListView(),
+      '/': (BuildContext context) => ReasobiApp(),
+    },
+  ));
 }
