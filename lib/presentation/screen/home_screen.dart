@@ -38,20 +38,25 @@ class HomeScreen extends StatelessWidget {
     final User currentUser = getItInstance.get<User>();
     final UserInfo userInfo = currentUser.providerData.first;
     CollectionReference invitesRef = FirebaseFirestore.instance.collection('invites');
-    invitesRef
-        .where("participants", arrayContainsAny: [
-          {
-            "uid": userInfo.uid,
-            "displayName": userInfo.displayName,
-            "photoURL": userInfo.photoURL,
-          }
-        ])
-        .get()
-        .then(
+    // Note: 参加している募集を取得
+    invitesRef.where("participantsUid", arrayContainsAny: [userInfo.uid]).get().then(
           (QuerySnapshot querySnapshot) {
-            querySnapshot.docs.forEach((doc) {
-              debugPrint(doc.data().toString());
-            });
+            querySnapshot.docs.forEach(
+              (doc) {
+                // Note: 参加者一覧を取得するサンプル実装
+                List<dynamic> participants = doc.data()["participantsRef"];
+                participants.forEach(
+                  (participant) {
+                    debugPrint(participant.toString());
+                    participant.get().then(
+                      (userQuerySnapshot) {
+                        debugPrint(userQuerySnapshot.data().toString());
+                      },
+                    );
+                  },
+                );
+              },
+            );
           },
         );
   }
