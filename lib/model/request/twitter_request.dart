@@ -23,12 +23,9 @@ class TwitterRequest {
     );
   }
 
-  Future<void> postTweet() async {
+  Future<void> postTweet(String tweet) async {
     try {
-      String text = """
-      ネコ\n猫\n🐈
-      """;
-      twitterApi.tweetService.update(status: text);
+      twitterApi.tweetService.update(status: tweet);
     } catch (error) {
       debugPrint(error.toString());
     }
