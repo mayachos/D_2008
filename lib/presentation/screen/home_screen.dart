@@ -6,7 +6,12 @@ import 'package:d_2008/presentation/transition/fade_route.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
+  @override
+  _HomeScreenState createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     fetchInvites();
@@ -35,7 +40,6 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  // 参加している募集をリストで取得する
   Future<void> fetchInvites() async {
     final User currentUser = getItInstance.get<User>();
     final UserInfo userInfo = currentUser.providerData.first;
