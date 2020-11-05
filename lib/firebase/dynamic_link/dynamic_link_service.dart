@@ -20,7 +20,7 @@ class DynamicLinkService {
     }
   }
 
-  Future<Uri> createInviteDynamicLink({int inviteId = 0}) async {
+  Future<Uri> createInviteDynamicLink({String inviteId = ""}) async {
     final DynamicLinkParameters parameters = DynamicLinkParameters(
       uriPrefix: 'https://reasobi.page.link',
       link: Uri.parse('https://reasobi.page.link.com/invite?id=$inviteId'),
