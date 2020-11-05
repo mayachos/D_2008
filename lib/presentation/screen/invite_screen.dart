@@ -1,4 +1,6 @@
-import 'package:d_2008/model/request/twitter_request.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:d_2008/di/get_it.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class InviteScreen extends StatefulWidget {
@@ -9,11 +11,13 @@ class InviteScreen extends StatefulWidget {
 class _InviteScreenState extends State<InviteScreen> {
   final titleController = TextEditingController();
   final detailController = TextEditingController();
+  final targetController = TextEditingController();
 
   @override
   void dispose() {
     titleController.dispose();
     detailController.dispose();
+    targetController.dispose();
     super.dispose();
   }
 
@@ -43,7 +47,13 @@ class _InviteScreenState extends State<InviteScreen> {
                 TextField(
                   decoration: InputDecoration(hintText: '詳細'),
                   controller: detailController,
-                  maxLength: 80,
+                  maxLength: 60,
+                  maxLengthEnforced: true,
+                ),
+                TextField(
+                  decoration: InputDecoration(hintText: '対象'),
+                  controller: targetController,
+                  maxLength: 15,
                   maxLengthEnforced: true,
                 ),
               ],
