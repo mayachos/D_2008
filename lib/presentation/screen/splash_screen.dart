@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:d_2008/di/get_it.dart';
 import 'package:d_2008/presentation/screen/home_screen.dart';
 import 'package:d_2008/presentation/screen/twitter_login_screen.dart';
@@ -47,19 +48,28 @@ class SplashScreen extends StatelessWidget {
       );
       _auth.signInWithCredential(credential).then((user) {
         debugPrint("ログイン成功");
-        getItInstance.registerFactory<User>(() => user.user);
-        sleep(Duration(milliseconds: 1500));
-        Navigator.pushReplacement(
-          context,
-          FadeRoute(page: HomeScreen()),
-        );
+        User currentUser = user.user;
+        UserInfo userInfo = currentUser.providerData.first;
+        DocumentReference userRef = FirebaseFirestore.instance.collection('users').doc(userInfo.uid);
+        Map<String, dynamic> data = {
+          "displayName": userInfo.displayName,
+          "photoURL": userInfo.photoURL,
+        };
+        userRef.update(data).then((value) {
+          sleep(Duration(milliseconds: 1000));
+          getItInstance.registerFactory<User>(() => currentUser);
+          Navigator.pushReplacement(
+            context,
+            FadeRoute(page: HomeScreen()),
+          );
+        });
         return;
       });
     } catch (error) {
       prefs.remove(twitterAccessToken);
       prefs.remove(twitterSecret);
       debugPrint("ログイン失敗");
-      sleep(Duration(milliseconds: 1500));
+      sleep(Duration(milliseconds: 1000));
       Navigator.pushReplacement(
         context,
         FadeRoute(page: TwitterLoginScreen()),
