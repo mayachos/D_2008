@@ -1,4 +1,3 @@
-import 'package:d_2008/di/get_it.dart';
 import 'package:dart_twitter_api/api/twitter_client.dart';
 import 'package:dart_twitter_api/twitter_api.dart';
 import 'package:flutter/cupertino.dart';
@@ -8,11 +7,10 @@ import '../../constants.dart';
 import '../../env_constants.dart';
 
 class TwitterRequest {
-  SharedPreferences prefs;
+  final SharedPreferences prefs;
   TwitterApi twitterApi;
 
-  TwitterRequest() {
-    this.prefs = getItInstance.get<SharedPreferences>();
+  TwitterRequest({@required this.prefs}) {
     this.twitterApi = TwitterApi(
       client: TwitterClient(
         consumerKey: twitterConsumerKey,

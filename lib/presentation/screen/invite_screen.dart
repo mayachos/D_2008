@@ -4,6 +4,7 @@ import 'package:d_2008/firebase/dynamic_link/dynamic_link_service.dart';
 import 'package:d_2008/model/request/twitter_request.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class InviteScreen extends StatefulWidget {
   @override
@@ -65,10 +66,11 @@ class _InviteScreenState extends State<InviteScreen> {
       ),
       floatingActionButton: true
           ? FloatingActionButton(
-              onPressed: () {
+              onPressed: () async {
                 // TODO: loadingの実装
                 final User currentUser = getItInstance.get<User>();
                 final UserInfo userInfo = currentUser.providerData.first;
+                final SharedPreferences prefs = await SharedPreferences.getInstance();
                 CollectionReference invitesRef = FirebaseFirestore.instance.collection('invites');
                 DocumentReference userRef = FirebaseFirestore.instance.collection('users').doc(userInfo.uid);
                 debugPrint(currentUser.providerData.toString());
@@ -100,7 +102,9 @@ class _InviteScreenState extends State<InviteScreen> {
                   debugPrint("id: ${ref.path.split("/").last}");
                   DynamicLinkService().createInviteDynamicLink(inviteId: ref.path.split("/").last).then((dynamicLink) {
                     debugPrint(dynamicLink.toString());
-                    TwitterRequest().postTweet(dynamicLink.toString());
+                    TwitterRequest(prefs: prefs).postTweet(dynamicLink.toString()).then(
+                          (_) => Navigator.pushNamedAndRemoveUntil(context, "/home", (route) => false),
+                        );
                   });
                 }).catchError((error) => print("Failed to add user: $error"));
               },
