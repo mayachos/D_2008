@@ -30,7 +30,8 @@ class _TwitterLoginScreenState extends State {
   // Twitterを経由してログイン認証
   Future<void> signInWithTwitter() async {
     final TwitterLoginResult result = await twitterLogin.authorize();
-    final SharedPreferences prefs = await getItInstance.getAsync<SharedPreferences>();
+    final SharedPreferences prefs =
+        await getItInstance.getAsync<SharedPreferences>();
 
     final AuthCredential credential = TwitterAuthProvider.credential(
       accessToken: result.session.token,
@@ -65,16 +66,45 @@ class _TwitterLoginScreenState extends State {
     );
 
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        title: Text("Test"),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            loginBtnTwitter,
-          ],
+      body: Container(
+        child: SafeArea(
+          child: Stack(
+            children: <Widget>[
+              new Container(
+                decoration: new BoxDecoration(
+                  image: new DecorationImage(
+                    image: AssetImage("assets/images/splash.png"),
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Center(
+                    child: Container(
+                      child: Center(
+                        child: Image.asset(
+                          "assets/images/logo2.png",
+                          width: 250.0,
+                          height: 250.0,
+                          fit: BoxFit.fill,
+                        ),
+                      ),
+                    ),
+                  ),
+                  Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        loginBtnTwitter,
+                      ],
+                    ),
+                  ),
+                ],
+              )
+            ],
+          ),
         ),
       ),
     );
