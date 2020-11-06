@@ -103,12 +103,12 @@ class SpaceBox extends SizedBox {
 class EventCard extends StatelessWidget {
   final String _title;
   final String _username;
-  final String _user_id;
-  final String _pic;
+  final String _userId;
+  final String _userPicture;
   final int _status;
 
-  EventCard(
-      this._title, this._pic, this._username, this._user_id, this._status);
+  EventCard(this._title, this._userPicture, this._username, this._userId,
+      this._status);
 
   List<Widget> statusIcon() {
     if (this._status == 1) {
@@ -165,7 +165,7 @@ class EventCard extends StatelessWidget {
                 SpaceBox.width(5),
                 Text(_username, style: TextStyle(fontWeight: FontWeight.bold)),
                 SpaceBox.width(5),
-                Text('@' + _user_id),
+                Text('@' + _userId),
               ],
             ),
             Row(
