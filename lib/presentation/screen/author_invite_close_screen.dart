@@ -117,6 +117,7 @@ class ParticipantCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       child: Container(
+        padding: EdgeInsets.all(10),
         child: Center(
           child: Row(
             children: <Widget>[
