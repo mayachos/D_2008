@@ -5,6 +5,7 @@ class InviteEntity {
   final String ownerPhotoURL;
   final String title;
   final String detail;
+  final String target;
   final String status;
   final List<dynamic> participants;
 
@@ -15,6 +16,7 @@ class InviteEntity {
     this.ownerPhotoURL,
     this.title,
     this.detail,
+    this.target,
     this.status,
     this.participants,
   });
@@ -48,6 +50,7 @@ class InviteEntity {
       ownerPhotoURL: data["ownerPhotoURL"],
       title: data["title"],
       detail: data["detail"],
+      target: data["target"],
       status: status,
       participants: data["usersInfo"],
     );

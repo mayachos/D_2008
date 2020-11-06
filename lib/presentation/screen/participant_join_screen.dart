@@ -1,5 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:d_2008/domain/entity/invite_entity.dart';
 import 'package:d_2008/presentation/screen/home_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import '../../constants.dart';
 
 class ParticipantJoin extends StatefulWidget {
   @override
@@ -10,14 +15,12 @@ class _State extends State<ParticipantJoin> {
   EventCard _eventCard;
   String _eventExplanation;
   String _withWho;
+  InviteEntity entity;
 
   @override
   void initState() {
     super.initState();
-    // TODO: 変数への代入
-    _eventCard = new EventCard("title", "pic", "username", "user_id", "");
-    _eventExplanation = "みんなでどこにいきますか〜、すごく楽しみにしているので早くいきたいです！";
-    _withWho = "お友達";
+    fetchData();
   }
 
   Widget _joinButton = new RaisedButton(
@@ -36,7 +39,7 @@ class _State extends State<ParticipantJoin> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: Icon(Icons.keyboard_arrow_left),
+        leading: Container(),
         centerTitle: true,
         title: Text("詳細"),
       ),
@@ -84,6 +87,31 @@ class _State extends State<ParticipantJoin> {
         ),
       ),
     );
+  }
+
+  Future<void> fetchData() async {
+    String path = "";
+    String inviteId = "";
+
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    inviteId = prefs.get(inviteKey);
+    if (inviteId == null || inviteId.isNotEmpty) {
+      path = inviteId;
+    } else {
+      Navigator.pop(context);
+    }
+    DocumentReference inviteRef = FirebaseFirestore.instance.doc("/invites/$path");
+    inviteRef.get().then((DocumentSnapshot snapShot) {
+      InviteEntity item = InviteEntity.fromData(snapShot.data(), snapShot.id);
+      entity = item;
+      setState(() {
+        _eventCard = EventCard(item.title, item.ownerPhotoURL, item.ownerName, "", item.status);
+        _eventExplanation = item.detail;
+        _withWho = item.target;
+      });
+    }).catchError((onError) {
+      Navigator.pop(context);
+    });
   }
 }
 
