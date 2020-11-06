@@ -139,6 +139,7 @@ class EventCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
                 Container(
+                  padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
                   child: Text(
                     _title,
                     textAlign: TextAlign.left,
