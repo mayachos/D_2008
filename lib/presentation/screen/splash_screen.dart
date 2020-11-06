@@ -27,15 +27,23 @@ class SplashScreen extends StatelessWidget {
       child: SafeArea(
         child: Stack(
           children: <Widget>[
+            new Container(
+              decoration: new BoxDecoration(
+                image: new DecorationImage(
+                  image: AssetImage("assets/images/splash.png"),
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
             Center(
               child: Container(
                 color: Colors.white,
                 child: Center(
                   child: Image.asset(
                     "assets/images/logo2.png",
-                    width: 250.0,
-                    height: 250.0,
-                    fit: BoxFit.fill,
+                    width: 300.0,
+                    height: 300.0,
+                    fit: BoxFit.cover,
                   ),
                 ),
               ),
@@ -58,7 +66,8 @@ class SplashScreen extends StatelessWidget {
         prefs.setBool(loggedIn, true);
         User currentUser = user.user;
         UserInfo userInfo = currentUser.providerData.first;
-        DocumentReference userRef = FirebaseFirestore.instance.collection('users').doc(userInfo.uid);
+        DocumentReference userRef =
+            FirebaseFirestore.instance.collection('users').doc(userInfo.uid);
         Map<String, dynamic> data = {
           "displayName": userInfo.displayName,
           "photoURL": userInfo.photoURL,
