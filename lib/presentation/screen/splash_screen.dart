@@ -61,17 +61,17 @@ class SplashScreen extends StatelessWidget {
         accessToken: prefs.getString(twitterAccessToken),
         secret: prefs.getString(twitterSecret),
       );
-      _auth.signInWithCredential(credential).then((user) {
+      _auth.signInWithCredential(credential).then((user) async {
         debugPrint("ログイン成功");
         prefs.setBool(loggedIn, true);
         User currentUser = user.user;
         UserInfo userInfo = currentUser.providerData.first;
-        DocumentReference userRef =
-            FirebaseFirestore.instance.collection('users').doc(userInfo.uid);
+        DocumentReference userRef = FirebaseFirestore.instance.collection('users').doc(userInfo.uid);
         Map<String, dynamic> data = {
           "displayName": userInfo.displayName,
           "photoURL": userInfo.photoURL,
         };
+        sleep(Duration(milliseconds: 1000));
         userRef.update(data).then((value) async {
           getItInstance.registerFactory<User>(() => currentUser);
           Navigator.pushNamed(context, '/home');
