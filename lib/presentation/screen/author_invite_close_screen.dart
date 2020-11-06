@@ -27,7 +27,7 @@ class _State extends State<AuthorInviteClose> {
       padding: EdgeInsets.all(10),
       child: Text("Close"),
     ),
-    color: Color(0xffFFEB3B),
+    color: Color(0xff51B5C1),
     textColor: Colors.black54,
 
     // TODO: closeボタンを押したときの挙動

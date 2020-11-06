@@ -28,7 +28,7 @@ class _State extends State<SendDMScreen> {
       padding: EdgeInsets.all(10),
       child: Text("DMを送信する"),
     ),
-    color: Color(0xffFFEB3B),
+    color: Color(0xff51B5C1),
     textColor: Colors.black54,
 
     //TODO: DM送信のボタンを押した時の動作を記述
