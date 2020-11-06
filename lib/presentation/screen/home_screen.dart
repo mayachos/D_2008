@@ -19,6 +19,8 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text("REASOBI"),
+        leading: Container(),
+        leadingWidth: 0.0,
       ),
       body: SafeArea(
         child: WillPopScope(
