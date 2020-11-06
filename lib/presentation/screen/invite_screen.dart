@@ -102,7 +102,9 @@ class _InviteScreenState extends State<InviteScreen> {
                   debugPrint("id: ${ref.path.split("/").last}");
                   DynamicLinkService().createInviteDynamicLink(inviteId: ref.path.split("/").last).then((dynamicLink) {
                     debugPrint(dynamicLink.toString());
-                    TwitterRequest(prefs: prefs).postTweet(dynamicLink.toString());
+                    TwitterRequest(prefs: prefs).postTweet(dynamicLink.toString()).then(
+                          (_) => Navigator.pushNamedAndRemoveUntil(context, "/home", (route) => false),
+                        );
                   });
                 }).catchError((error) => print("Failed to add user: $error"));
               },
