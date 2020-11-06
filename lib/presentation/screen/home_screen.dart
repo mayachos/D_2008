@@ -41,7 +41,6 @@ class _HomeScreenState extends State<HomeScreen> {
               },
             ),
           ),
-          // child: InviteListView(),
           onWillPop: () {
             return SystemChannels.platform.invokeMethod('SystemNavigator.pop');
           },
@@ -141,7 +140,6 @@ class EventCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
                 Container(
-                  //userPicture
                   width: 30.0,
                   height: 30.0,
                   decoration: BoxDecoration(

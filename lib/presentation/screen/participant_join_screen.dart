@@ -13,8 +13,9 @@ class _State extends State<ParticipantJoin> {
 
   @override
   void initState() {
+    super.initState();
     // TODO: 変数への代入
-    _eventCard = new EventCard("title", "pic", "username", "user_id", 1);
+    _eventCard = new EventCard("title", "pic", "username", "user_id", "");
     _eventExplanation = "みんなでどこにいきますか〜、すごく楽しみにしているので早くいきたいです！";
     _withWho = "お友達";
   }
@@ -87,8 +88,7 @@ class _State extends State<ParticipantJoin> {
 }
 
 class SpaceBox extends SizedBox {
-  SpaceBox({double width = 8, double height = 8})
-      : super(width: width, height: height);
+  SpaceBox({double width = 8, double height = 8}) : super(width: width, height: height);
 
   SpaceBox.width([double value = 8]) : super(width: value);
   SpaceBox.height([double value = 8]) : super(height: value);
