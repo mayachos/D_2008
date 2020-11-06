@@ -13,6 +13,20 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  var _cardList = List<EventCard>();
+
+  @override
+  void initState() {
+    _cardList.add(EventCard("ドンキ行きたい1",
+        "assets/images/Jaappao_2020_Square3.png", "Jaappao", "_Jaappao_", 1));
+
+    _cardList.add(EventCard("ドンキ行きたい2",
+        "assets/images/Jaappao_2020_Square3.png", "Jaappao", "_Jaappao_", 2));
+
+    _cardList.add(EventCard("ドンキ行きたい3",
+        "assets/images/Jaappao_2020_Square3.png", "Jaappao", "_Jaappao_", 3));
+  }
+
   @override
   Widget build(BuildContext context) {
     fetchInvites();
@@ -27,7 +41,15 @@ class _HomeScreenState extends State<HomeScreen> {
           child: Container(
             child: SingleChildScrollView(
               // TODO: Change List View
-              child: Container(),
+              child: Container(
+                padding: EdgeInsets.all(8),
+                child: ListView.builder(
+                  itemCount: _cardList.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return _cardList[index];
+                  },
+                ),
+              ),
             ),
           ),
           onWillPop: () {
@@ -52,8 +74,12 @@ class _HomeScreenState extends State<HomeScreen> {
     final User currentUser = getItInstance.get<User>();
     final UserInfo userInfo = currentUser.providerData.first;
     List<InviteEntity> invites = [];
-    CollectionReference invitesRef = FirebaseFirestore.instance.collection('invites');
-    invitesRef.where("participantsUid", arrayContainsAny: [userInfo.uid]).get().then(
+    CollectionReference invitesRef =
+        FirebaseFirestore.instance.collection('invites');
+    invitesRef
+        .where("participantsUid", arrayContainsAny: [userInfo.uid])
+        .get()
+        .then(
           (QuerySnapshot querySnapshot) {
             querySnapshot.docs.forEach(
               (doc) {
@@ -63,5 +89,92 @@ class _HomeScreenState extends State<HomeScreen> {
             return invites;
           },
         );
+  }
+}
+
+class SpaceBox extends SizedBox {
+  SpaceBox({double width = 8, double height = 8})
+      : super(width: width, height: height);
+
+  SpaceBox.width([double value = 8]) : super(width: value);
+  SpaceBox.height([double value = 8]) : super(height: value);
+}
+
+class EventCard extends StatelessWidget {
+  final String _title;
+  final String _username;
+  final String _user_id;
+  final String _pic;
+  final int _status;
+
+  EventCard(
+      this._title, this._pic, this._username, this._user_id, this._status);
+
+  List<Widget> statusIcon() {
+    if (this._status == 1) {
+      return <Widget>[Icon(Icons.check_circle), SpaceBox.width(5), Text("募集中")];
+    } else if (this._status == 2) {
+      return <Widget>[
+        Icon(Icons.thumb_up),
+        SpaceBox.width(5),
+        Text("Joined !")
+      ];
+    } else if (this._status == 3) {
+      return <Widget>[Icon(Icons.block), SpaceBox.width(3), Text("しめきり")];
+    } else {
+      return <Widget>[];
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      child: Container(
+        margin: EdgeInsets.fromLTRB(15, 10, 15, 10),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: <Widget>[
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: <Widget>[
+                Container(
+                  child: Text(
+                    _title,
+                    textAlign: TextAlign.left,
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: <Widget>[
+                Container(
+                  //userPicture
+                  width: 30.0,
+                  height: 30.0,
+                  decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      image: DecorationImage(
+                          fit: BoxFit.fill,
+                          // image: NetworkImage(_pic)
+                          image: NetworkImage(
+                              "https://abs.twimg.com/sticky/default_profile_images/default_profile_normal.png"))),
+                ),
+                SpaceBox.width(5),
+                Text(_username, style: TextStyle(fontWeight: FontWeight.bold)),
+                SpaceBox.width(5),
+                Text('@' + _user_id),
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: this.statusIcon(),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }
