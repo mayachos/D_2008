@@ -1,6 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:d_2008/di/get_it.dart';
+import 'package:d_2008/domain/entity/invite_entity.dart';
 import 'package:d_2008/presentation/screen/invite_screen.dart';
 import 'package:d_2008/presentation/transition/fade_route.dart';
-import 'package:d_2008/presentation/widget/invite_list_view.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -10,18 +13,13 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  List<InviteEntity> inviteList = [];
   var _cardList = List<EventCard>();
 
   @override
   void initState() {
-    _cardList.add(EventCard("ドンキ行きたい1",
-        "assets/images/Jaappao_2020_Square3.png", "Jaappao", "_Jaappao_", 1));
-
-    _cardList.add(EventCard("ドンキ行きたい2",
-        "assets/images/Jaappao_2020_Square3.png", "Jaappao", "_Jaappao_", 2));
-
-    _cardList.add(EventCard("ドンキ行きたい3",
-        "assets/images/Jaappao_2020_Square3.png", "Jaappao", "_Jaappao_", 3));
+    super.initState();
+    fetchInviteList();
   }
 
   @override
@@ -35,20 +33,15 @@ class _HomeScreenState extends State<HomeScreen> {
       body: SafeArea(
         child: WillPopScope(
           child: Container(
-            child: SingleChildScrollView(
-              // TODO: Change List View
-              child: Container(
-                padding: EdgeInsets.all(8),
-                child: ListView.builder(
-                  itemCount: _cardList.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    return _cardList[index];
-                  },
-                ),
-              ),
+            padding: EdgeInsets.all(8),
+            child: ListView.builder(
+              itemCount: _cardList.length,
+              itemBuilder: (BuildContext context, int index) {
+                return _cardList[index];
+              },
             ),
           ),
-          child: InviteListView(),
+          // child: InviteListView(),
           onWillPop: () {
             return SystemChannels.platform.invokeMethod('SystemNavigator.pop');
           },
@@ -66,11 +59,36 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
+
+  Future<void> fetchInviteList() async {
+    final User currentUser = getItInstance.get<User>();
+    final UserInfo userInfo = currentUser.providerData.first;
+    List<InviteEntity> invites = [];
+    CollectionReference invitesRef = FirebaseFirestore.instance.collection('invites');
+    invitesRef.where("participantsUid", arrayContainsAny: [userInfo.uid]).get().then(
+          (QuerySnapshot querySnapshot) {
+            querySnapshot.docs.forEach(
+              (doc) {
+                debugPrint(doc.data().toString());
+                invites.add(InviteEntity.fromData(doc.data(), doc.id));
+              },
+            );
+            setState(
+              () {
+                _cardList = invites
+                    .map((InviteEntity item) =>
+                        EventCard(item.title, item.ownerPhotoURL, item.ownerName, "", item.status))
+                    .toList();
+                inviteList = invites;
+              },
+            );
+          },
+        );
+  }
 }
 
 class SpaceBox extends SizedBox {
-  SpaceBox({double width = 8, double height = 8})
-      : super(width: width, height: height);
+  SpaceBox({double width = 8, double height = 8}) : super(width: width, height: height);
 
   SpaceBox.width([double value = 8]) : super(width: value);
   SpaceBox.height([double value = 8]) : super(height: value);
@@ -81,24 +99,19 @@ class EventCard extends StatelessWidget {
   final String _username;
   final String _userId;
   final String _userPicture;
-  final int _status;
+  final String _status;
 
-  EventCard(this._title, this._userPicture, this._username, this._userId,
-      this._status);
+  EventCard(this._title, this._userPicture, this._username, this._userId, this._status);
 
   List<Widget> statusIcon() {
-    if (this._status == 1) {
+    if (this._status == "1") {
       return <Widget>[Icon(Icons.check_circle), SpaceBox.width(5), Text("募集中")];
-    } else if (this._status == 2) {
-      return <Widget>[
-        Icon(Icons.thumb_up),
-        SpaceBox.width(5),
-        Text("Joined !")
-      ];
-    } else if (this._status == 3) {
+    } else if (this._status == "2") {
+      return <Widget>[Icon(Icons.thumb_up), SpaceBox.width(5), Text("参加")];
+    } else if (this._status == "3") {
       return <Widget>[Icon(Icons.block), SpaceBox.width(3), Text("しめきり")];
     } else {
-      return <Widget>[];
+      return <Widget>[Icon(Icons.error), SpaceBox.width(3), Text("キャンセル")];
     }
   }
 
@@ -133,16 +146,12 @@ class EventCard extends StatelessWidget {
                   height: 30.0,
                   decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      image: DecorationImage(
-                          fit: BoxFit.fill,
-                          // image: NetworkImage(_pic)
-                          image: NetworkImage(
-                              "https://abs.twimg.com/sticky/default_profile_images/default_profile_normal.png"))),
+                      image: DecorationImage(fit: BoxFit.fill, image: NetworkImage(_userPicture))),
                 ),
                 SpaceBox.width(5),
                 Text(_username, style: TextStyle(fontWeight: FontWeight.bold)),
                 SpaceBox.width(5),
-                Text('@' + _userId),
+                Text('' + _userId),
               ],
             ),
             Row(

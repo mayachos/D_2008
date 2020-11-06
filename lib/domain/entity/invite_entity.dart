@@ -40,11 +40,6 @@ class InviteEntity {
         status = "4";
       }
     }
-    if (isClosed) {
-      status = "締め切り";
-    } else {
-      status = "キャンセル";
-    }
 
     return InviteEntity(
       id: dataId,
