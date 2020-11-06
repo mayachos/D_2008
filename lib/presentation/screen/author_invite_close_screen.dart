@@ -1,3 +1,4 @@
+import 'package:d_2008/presentation/screen/home_screen.dart';
 import 'package:flutter/material.dart';
 
 class AuthorInviteClose extends StatefulWidget {
@@ -103,85 +104,6 @@ class SpaceBox extends SizedBox {
 
   SpaceBox.width([double value = 8]) : super(width: value);
   SpaceBox.height([double value = 8]) : super(height: value);
-}
-
-class EventCard extends StatelessWidget {
-  final String _title;
-  final String _username;
-  final String _userId;
-  final String _topPicture;
-  final int _status;
-
-  EventCard(this._title, this._topPicture, this._username, this._userId,
-      this._status);
-
-  List<Widget> statusIcon() {
-    if (this._status == 1) {
-      return <Widget>[Icon(Icons.check_circle), SpaceBox.width(5), Text("募集中")];
-    } else if (this._status == 2) {
-      return <Widget>[
-        Icon(Icons.thumb_up),
-        SpaceBox.width(5),
-        Text("Joined !")
-      ];
-    } else if (this._status == 3) {
-      return <Widget>[Icon(Icons.block), SpaceBox.width(3), Text("しめきり")];
-    } else {
-      return <Widget>[];
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      child: Container(
-        margin: EdgeInsets.fromLTRB(15, 10, 15, 10),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: <Widget>[
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: <Widget>[
-                Container(
-                  child: Text(
-                    _title,
-                    textAlign: TextAlign.left,
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                  ),
-                ),
-              ],
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: <Widget>[
-                Container(
-                  //userPicture
-                  width: 30.0,
-                  height: 30.0,
-                  decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      image: DecorationImage(
-                          fit: BoxFit.fill,
-                          // image: NetworkImage(_pic)
-                          image: NetworkImage(
-                              "https://abs.twimg.com/sticky/default_profile_images/default_profile_normal.png"))),
-                ),
-                SpaceBox.width(5),
-                Text(_username, style: TextStyle(fontWeight: FontWeight.bold)),
-                SpaceBox.width(5),
-                Text('@' + _userId),
-              ],
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: this.statusIcon(),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
 }
 
 class ParticipantCard extends StatelessWidget {
