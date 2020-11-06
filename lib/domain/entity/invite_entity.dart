@@ -24,7 +24,21 @@ class InviteEntity {
     bool isClosed = data["isClosed"];
     bool isOpen = data["isOpen"];
     if (isOpen) {
-      status = "募集中";
+      if (isClosed) {
+        // 参加
+        status = "2";
+      } else {
+        // 募集中
+        status = "1";
+      }
+    } else {
+      if (isClosed) {
+        // 締め切り
+        status = "3";
+      } else {
+        // キャンセル
+        status = "4";
+      }
     }
     if (isClosed) {
       status = "締め切り";
