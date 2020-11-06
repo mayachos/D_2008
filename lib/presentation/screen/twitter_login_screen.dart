@@ -30,8 +30,7 @@ class _TwitterLoginScreenState extends State {
   // Twitterを経由してログイン認証
   Future<void> signInWithTwitter() async {
     final TwitterLoginResult result = await twitterLogin.authorize();
-    final SharedPreferences prefs =
-        await getItInstance.getAsync<SharedPreferences>();
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
 
     final AuthCredential credential = TwitterAuthProvider.credential(
       accessToken: result.session.token,
