@@ -1,6 +1,13 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:d_2008/di/get_it.dart';
+import 'package:d_2008/domain/entity/invite_entity.dart';
 import 'package:d_2008/presentation/screen/home_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import '../../constants.dart';
 
 import '../../di/get_it.dart';
 
@@ -11,28 +18,16 @@ class ParticipantJoin extends StatefulWidget {
 
 class _State extends State<ParticipantJoin> {
   EventCard _eventCard;
-  String _eventExplanation;
-  String _withWho;
+  String _eventExplanation = "";
+  String _withWho = "";
+  InviteEntity entity;
+  List<MemberCard> memberList = [];
 
   @override
   void initState() {
-    // TODO: 変数への代入
-    _eventCard = new EventCard("title", "pic", "username", "user_id", "1");
-    _eventExplanation = "みんなでどこにいきますか〜、すごく楽しみにしているので早くいきたいです！";
-    _withWho = "お友達";
+    super.initState();
+    fetchData();
   }
-
-  Widget _joinButton = new RaisedButton(
-    child: Container(
-      padding: EdgeInsets.all(10),
-      child: Text("Join"),
-    ),
-    color: Color(0xffFFEB3B),
-    textColor: Colors.black54,
-
-    // TODO: joinButtonの動作
-    onPressed: () {},
-  );
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +35,7 @@ class _State extends State<ParticipantJoin> {
     String photoURL = currentUser.providerData.first.photoURL;
     return Scaffold(
       appBar: AppBar(
-        leading: Icon(Icons.keyboard_arrow_left),
+        leading: Container(),
         centerTitle: true,
         title: Text("詳細"),
         actions: [
@@ -114,8 +109,19 @@ class _State extends State<ParticipantJoin> {
                 ],
               ),
               SpaceBox.height(30),
-              Center(
-                child: _joinButton,
+              Container(
+                child: Center(
+                  child: JoinButton(context, entity).build(),
+                ),
+              ),
+              SizedBox(height: 20),
+              Expanded(
+                child: ListView.builder(
+                  itemCount: memberList.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return memberList[index];
+                  },
+                ),
               ),
             ],
           ),
@@ -123,12 +129,147 @@ class _State extends State<ParticipantJoin> {
       ),
     );
   }
+
+  Future<void> fetchData() async {
+    String path = "";
+    String inviteId = "";
+
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    inviteId = prefs.get(inviteKey);
+    if (inviteId == null || inviteId.isNotEmpty) {
+      path = inviteId;
+    } else {
+      Navigator.pop(context);
+    }
+    DocumentReference inviteRef = FirebaseFirestore.instance.doc("/invites/$path");
+    inviteRef.get().then((DocumentSnapshot snapShot) {
+      InviteEntity item = InviteEntity.fromData(snapShot.data(), snapShot.id);
+      entity = item;
+      setState(() {
+        _eventCard = EventCard(item.title, item.ownerPhotoURL, item.ownerName, "", item.status, "");
+        _eventExplanation = item.detail;
+        _withWho = item.target;
+        memberList = item.participants.map((user) => MemberCard(user["displayName"], user["photoURL"])).toList();
+      });
+    }).catchError((onError) {
+      Navigator.canPop(context);
+    });
+  }
 }
 
 class SpaceBox extends SizedBox {
-  SpaceBox({double width = 8, double height = 8})
-      : super(width: width, height: height);
+  SpaceBox({double width = 8, double height = 8}) : super(width: width, height: height);
 
   SpaceBox.width([double value = 8]) : super(width: value);
   SpaceBox.height([double value = 8]) : super(height: value);
+}
+
+class JoinButton {
+  final BuildContext context;
+  final InviteEntity entity;
+  JoinButton(this.context, this.entity);
+
+  Widget build() {
+    return RaisedButton(
+      child: Container(
+        padding: EdgeInsets.all(10),
+        child: Text("Join"),
+      ),
+      color: Color(0xffFFEB3B),
+      textColor: Colors.black54,
+      onPressed: () {
+        try {
+          if (entity != null) {
+            User currentUser = getItInstance.get<User>();
+            if (!entity.participantsUid.contains(currentUser.providerData.first.photoURL)) {
+              UserInfo info = currentUser.providerData.first;
+              // 更新
+              DocumentReference inviteRef = FirebaseFirestore.instance.doc("/invites/${entity.id}");
+              List<String> userIds = entity.participantsUid.map((e) => e.toString()).toList();
+              userIds.add(info.uid);
+              List<Map<String, dynamic>> participants = [];
+
+              entity.participants.forEach((element) {
+                participants.add(element);
+              });
+              participants.addAll({
+                {
+                  "uid": info.uid,
+                  "displayName": info.displayName,
+                  "photoURL": info.photoURL,
+                }
+              });
+
+              // 取得, パスを取得, 削除, ポスト
+              inviteRef.get().then((DocumentSnapshot snapshot) {
+                inviteRef.delete().then((_) {
+                  DocumentReference dRef = FirebaseFirestore.instance.collection('invites').doc('${snapshot.id}');
+                  dRef.set({
+                    'ownerId': snapshot.data()["ownerId"].toString(),
+                    'ownerName': snapshot.data()["ownerName"].toString(),
+                    'ownerPhotoURL': snapshot.data()["ownerPhotoURL"].toString(),
+                    'title': snapshot.data()["title"].toString(),
+                    'detail': snapshot.data()["detail"].toString(),
+                    'target': snapshot.data()["target"].toString(),
+                    'participantsRef': snapshot.data()["participantsRef"].toString(),
+                    'participantsUid': userIds,
+                    'usersInfo': participants,
+                    'expulsionUserUid': [],
+                    'isOpen': true,
+                    'isClosed': false,
+                  }).then((_) => Navigator.pop(context));
+                });
+              }).catchError((onError) {
+                debugPrint(onError.toString());
+              });
+            } else {
+              Navigator.pop(context);
+            }
+          } else {
+            Navigator.pop(context);
+          }
+        } catch (error) {
+          Navigator.canPop(context);
+        }
+      },
+    );
+  }
+}
+
+class MemberCard extends StatelessWidget {
+  final String _username;
+  final String _userPicture;
+
+  MemberCard(this._username, this._userPicture);
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      child: Container(
+        height: 50,
+        margin: EdgeInsets.fromLTRB(15, 10, 15, 10),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: <Widget>[
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: <Widget>[
+                Container(
+                  width: 50.0,
+                  height: 50.0,
+                  decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      image: DecorationImage(fit: BoxFit.fill, image: NetworkImage(_userPicture))),
+                ),
+                SpaceBox.width(15),
+                Text(_username, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
+                SpaceBox.width(5),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 }

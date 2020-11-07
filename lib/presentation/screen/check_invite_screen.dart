@@ -19,27 +19,19 @@ class _CheckInviteScreenState extends State<CheckInviteScreen> {
   List<dynamic> users = [];
 
   @override
+  void initState() {
+    super.initState();
+    getData();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text("REASOBI"),
       ),
       body: SafeArea(
-        child: Container(
-          child: SingleChildScrollView(
-            child: Column(
-              children: <Widget>[
-                SizedBox(height: 20),
-                Card(
-                  child: Container(
-                    height: 200,
-                  ),
-                ),
-                SizedBox(height: 20),
-              ],
-            ),
-          ),
-        ),
+        child: Container(),
       ),
     );
   }
@@ -52,13 +44,13 @@ class _CheckInviteScreenState extends State<CheckInviteScreen> {
     } else {
       path = inviteId;
     }
-    prefs.remove(inviteKey);
-
     DocumentReference inviteRef = FirebaseFirestore.instance.doc("/invites/$path");
     inviteRef.get().then((DocumentSnapshot snapShot) {
       snapShot.data().forEach((key, value) {
         debugPrint("key: $key");
         debugPrint("value: $value");
+        // TODO: IDをみて条件分岐
+        Navigator.pushReplacementNamed(context, "/ParticipantJoin");
       });
     });
   }

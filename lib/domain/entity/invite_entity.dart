@@ -5,8 +5,10 @@ class InviteEntity {
   final String ownerPhotoURL;
   final String title;
   final String detail;
+  final String target;
   final String status;
   final List<dynamic> participants;
+  final List<dynamic> participantsUid;
 
   InviteEntity({
     this.id,
@@ -15,8 +17,10 @@ class InviteEntity {
     this.ownerPhotoURL,
     this.title,
     this.detail,
+    this.target,
     this.status,
     this.participants,
+    this.participantsUid,
   });
 
   factory InviteEntity.fromData(Map<String, dynamic> data, String dataId) {
@@ -48,8 +52,10 @@ class InviteEntity {
       ownerPhotoURL: data["ownerPhotoURL"],
       title: data["title"],
       detail: data["detail"],
+      target: data["target"],
       status: status,
       participants: data["usersInfo"],
+      participantsUid: data["participantsUid"],
     );
   }
 }

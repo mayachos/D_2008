@@ -1,3 +1,4 @@
+import 'package:d_2008/presentation/screen/author_invite_close_screen.dart'; //ParticipantCardのため
 import 'package:d_2008/presentation/screen/home_screen.dart'; //EventCardのため
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -19,8 +20,7 @@ class _State extends State<SendDMScreen> {
   @override
   void initState() {
     // TODO: 変数への代入
-    _eventCard = new EventCard(
-        "title", "pic", "username", "user_id", "3"); //1…募集中, 2…Joined !, 3…しめきり
+    _eventCard = new EventCard("title", "pic", "username", "user_id", "", ""); //1…募集中, 2…Joined !, 3…しめきり
     _eventExplanation = 'みんなでどこに行きますか〜、すごく楽しみにしているので早く行きたいです！';
     _withWho = "お友達";
     _participants.add(new ParticipantCard("kari", "Username", "this_is_id"));

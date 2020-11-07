@@ -1,6 +1,7 @@
 import 'package:d_2008/presentation/reasobi_app.dart';
 import 'package:d_2008/presentation/screen/check_invite_screen.dart';
 import 'package:d_2008/presentation/screen/home_screen.dart';
+import 'package:d_2008/presentation/screen/participant_join_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:pedantic/pedantic.dart';
@@ -8,8 +9,7 @@ import 'package:pedantic/pedantic.dart';
 import 'di/get_it.dart' as getIt;
 
 void main() async {
-  final MaterialColor customSwatch =
-      const MaterialColor(0xff51B5C1, const <int, Color>{
+  final MaterialColor customSwatch = const MaterialColor(0xff51B5C1, const <int, Color>{
     50: const Color(0xFFEAF6F8),
     100: const Color(0xFFCBE9EC),
     200: const Color(0xFFA8DAE0),
@@ -37,6 +37,7 @@ void main() async {
       '/': (BuildContext context) => ReasobiApp(),
       '/home': (BuildContext context) => HomeScreen(),
       '/invite': (BuildContext context) => CheckInviteScreen(),
+      '/ParticipantJoin': (BuildContext context) => ParticipantJoin(),
     },
   ));
 }

@@ -72,7 +72,7 @@ class SplashScreen extends StatelessWidget {
           "photoURL": userInfo.photoURL,
         };
         sleep(Duration(milliseconds: 1000));
-        userRef.update(data).then((value) async {
+        userRef.set(data).then((value) async {
           getItInstance.registerFactory<User>(() => currentUser);
           Navigator.pushNamed(context, '/home');
         });
@@ -82,6 +82,7 @@ class SplashScreen extends StatelessWidget {
       prefs.remove(twitterAccessToken);
       prefs.remove(twitterSecret);
       debugPrint("ログイン失敗");
+      prefs.setBool(loggedIn, false);
       sleep(Duration(milliseconds: 1000));
       Navigator.pushReplacement(
         context,
