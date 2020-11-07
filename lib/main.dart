@@ -29,6 +29,7 @@ void main() async {
 
   runApp(MaterialApp(
     title: "REASOBI",
+    debugShowCheckedModeBanner: false,
     theme: ThemeData(
       primarySwatch: customSwatch,
       visualDensity: VisualDensity.adaptivePlatformDensity,
