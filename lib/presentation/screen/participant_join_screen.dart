@@ -19,6 +19,7 @@ class _State extends State<ParticipantJoin> {
   String _eventExplanation = "";
   String _withWho = "";
   InviteEntity entity;
+  List<MemberCard> memberList = [];
 
   @override
   void initState() {
@@ -70,8 +71,19 @@ class _State extends State<ParticipantJoin> {
                 ],
               ),
               SpaceBox.height(30),
-              Center(
-                child: JoinButton(context, entity).build(),
+              Container(
+                child: Center(
+                  child: JoinButton(context, entity).build(),
+                ),
+              ),
+              SizedBox(height: 20),
+              Expanded(
+                child: ListView.builder(
+                  itemCount: memberList.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return memberList[index];
+                  },
+                ),
               ),
             ],
           ),
@@ -99,6 +111,7 @@ class _State extends State<ParticipantJoin> {
         _eventCard = EventCard(item.title, item.ownerPhotoURL, item.ownerName, "", item.status);
         _eventExplanation = item.detail;
         _withWho = item.target;
+        memberList = item.participants.map((user) => MemberCard(user["displayName"], user["photoURL"])).toList();
       });
     }).catchError((onError) {
       Navigator.canPop(context);
@@ -181,6 +194,44 @@ class JoinButton {
           Navigator.canPop(context);
         }
       },
+    );
+  }
+}
+
+class MemberCard extends StatelessWidget {
+  final String _username;
+  final String _userPicture;
+
+  MemberCard(this._username, this._userPicture);
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      child: Container(
+        height: 50,
+        margin: EdgeInsets.fromLTRB(15, 10, 15, 10),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: <Widget>[
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: <Widget>[
+                Container(
+                  width: 50.0,
+                  height: 50.0,
+                  decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      image: DecorationImage(fit: BoxFit.fill, image: NetworkImage(_userPicture))),
+                ),
+                SpaceBox.width(15),
+                Text(_username, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
+                SpaceBox.width(5),
+              ],
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
