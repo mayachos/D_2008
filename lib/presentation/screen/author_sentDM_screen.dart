@@ -1,6 +1,9 @@
 import 'package:d_2008/presentation/screen/home_screen.dart'; //EventCardのため
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:d_2008/presentation/screen/author_invite_close_screen.dart'; //ParticipantCardのため
+import 'package:d_2008/presentation/screen/author_invite_close_screen.dart';
+
+import '../../di/get_it.dart'; //ParticipantCardのため
 
 class SendDMScreen extends StatefulWidget {
   @override
@@ -37,11 +40,29 @@ class _State extends State<SendDMScreen> {
 
   @override
   Widget build(BuildContext context) {
+    User currentUser = getItInstance.get<User>();
+    String photoURL = currentUser.providerData.first.photoURL;
+
     return Scaffold(
       appBar: AppBar(
         leading: Icon(Icons.keyboard_arrow_left),
         centerTitle: true,
         title: Text("投稿詳細"),
+        actions: [
+          Container(
+            //userPicture
+            width: 40.0,
+            height: 40.0,
+            margin: EdgeInsets.fromLTRB(0, 10, 10, 10),
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              image: DecorationImage(
+                  fit: BoxFit.cover, image: NetworkImage(photoURL)
+                  // image: NetworkImage("https://abs.twimg.com/sticky/default_profile_images/default_profile_normal.png")
+                  ),
+            ),
+          ),
+        ],
       ),
       body: Container(
         margin: EdgeInsets.fromLTRB(15, 10, 15, 10),

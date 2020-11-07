@@ -24,11 +24,28 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    User currentUser = getItInstance.get<User>();
+    String photoURL = currentUser.providerData.first.photoURL;
     return Scaffold(
       appBar: AppBar(
         title: Text("REASOBI"),
         leading: Container(),
         leadingWidth: 0.0,
+        actions: [
+          Container(
+            //userPicture
+            width: 40.0,
+            height: 40.0,
+            margin: EdgeInsets.fromLTRB(0, 10, 10, 10),
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              image: DecorationImage(
+                  fit: BoxFit.cover, image: NetworkImage(photoURL)
+                  // image: NetworkImage("https://abs.twimg.com/sticky/default_profile_images/default_profile_normal.png")
+                  ),
+            ),
+          ),
+        ],
       ),
       body: SafeArea(
         child: WillPopScope(
