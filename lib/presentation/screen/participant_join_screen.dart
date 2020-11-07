@@ -108,7 +108,7 @@ class _State extends State<ParticipantJoin> {
       InviteEntity item = InviteEntity.fromData(snapShot.data(), snapShot.id);
       entity = item;
       setState(() {
-        _eventCard = EventCard(item.title, item.ownerPhotoURL, item.ownerName, "", item.status);
+        _eventCard = EventCard(item.title, item.ownerPhotoURL, item.ownerName, "", item.status, "");
         _eventExplanation = item.detail;
         _withWho = item.target;
         memberList = item.participants.map((user) => MemberCard(user["displayName"], user["photoURL"])).toList();

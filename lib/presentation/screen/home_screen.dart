@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:d_2008/constants.dart';
 import 'package:d_2008/di/get_it.dart';
 import 'package:d_2008/domain/entity/invite_entity.dart';
 import 'package:d_2008/presentation/screen/invite_screen.dart';
@@ -6,6 +7,7 @@ import 'package:d_2008/presentation/transition/fade_route.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -76,7 +78,7 @@ class _HomeScreenState extends State<HomeScreen> {
               () {
                 _cardList = invites
                     .map((InviteEntity item) =>
-                        EventCard(item.title, item.ownerPhotoURL, item.ownerName, "", item.status))
+                        EventCard(item.title, item.ownerPhotoURL, item.ownerName, "", item.status, item.id))
                     .toList();
                 inviteList = invites;
               },
@@ -99,8 +101,16 @@ class EventCard extends StatelessWidget {
   final String _userId;
   final String _userPicture;
   final String _status;
+  final String _inviteId;
 
-  EventCard(this._title, this._userPicture, this._username, this._userId, this._status);
+  EventCard(
+    this._title,
+    this._userPicture,
+    this._username,
+    this._userId,
+    this._status,
+    this._inviteId,
+  );
 
   List<Widget> statusIcon() {
     if (this._status == "1") {
@@ -116,47 +126,56 @@ class EventCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      child: Container(
-        margin: EdgeInsets.fromLTRB(15, 10, 15, 10),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: <Widget>[
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: <Widget>[
-                Container(
-                  padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
-                  child: Text(
-                    _title,
-                    textAlign: TextAlign.left,
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+    return GestureDetector(
+      onTap: () async {
+        if (_inviteId != null && _inviteId.isNotEmpty) {
+          SharedPreferences prefs = await SharedPreferences.getInstance();
+          prefs.setString(inviteKey, _inviteId);
+          Navigator.pushNamed(context, "/ParticipantJoin");
+        }
+      },
+      child: Card(
+        child: Container(
+          margin: EdgeInsets.fromLTRB(15, 10, 15, 10),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: <Widget>[
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: <Widget>[
+                  Container(
+                    padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
+                    child: Text(
+                      _title,
+                      textAlign: TextAlign.left,
+                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    ),
                   ),
-                ),
-              ],
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: <Widget>[
-                Container(
-                  width: 30.0,
-                  height: 30.0,
-                  decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      image: DecorationImage(fit: BoxFit.fill, image: NetworkImage(_userPicture))),
-                ),
-                SpaceBox.width(5),
-                Text(_username, style: TextStyle(fontWeight: FontWeight.bold)),
-                SpaceBox.width(5),
-                Text('' + _userId),
-              ],
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: this.statusIcon(),
-            ),
-          ],
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: <Widget>[
+                  Container(
+                    width: 30.0,
+                    height: 30.0,
+                    decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        image: DecorationImage(fit: BoxFit.fill, image: NetworkImage(_userPicture))),
+                  ),
+                  SpaceBox.width(5),
+                  Text(_username, style: TextStyle(fontWeight: FontWeight.bold)),
+                  SpaceBox.width(5),
+                  Text('' + _userId),
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: this.statusIcon(),
+              ),
+            ],
+          ),
         ),
       ),
     );
