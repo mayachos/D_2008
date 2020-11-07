@@ -14,7 +14,7 @@ class _State extends State<ParticipantJoin> {
   @override
   void initState() {
     // TODO: 変数への代入
-    _eventCard = new EventCard("title", "pic", "username", "user_id", 1);
+    _eventCard = new EventCard("title", "pic", "username", "user_id", "1");
     _eventExplanation = "みんなでどこにいきますか〜、すごく楽しみにしているので早くいきたいです！";
     _withWho = "お友達";
   }

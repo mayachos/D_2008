@@ -17,7 +17,7 @@ class _State extends State<SendDMScreen> {
   void initState() {
     // TODO: 変数への代入
     _eventCard = new EventCard(
-        "title", "pic", "username", "user_id", 3); //1…募集中, 2…Joined !, 3…しめきり
+        "title", "pic", "username", "user_id", "3"); //1…募集中, 2…Joined !, 3…しめきり
     _eventExplanation = 'みんなでどこに行きますか〜、すごく楽しみにしているので早く行きたいです！';
     _withWho = "お友達";
     _participants.add(new ParticipantCard("kari", "Username", "this_is_id"));
