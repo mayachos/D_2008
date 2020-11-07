@@ -66,19 +66,38 @@ class _State extends State<ParticipantJoin> {
             mainAxisSize: MainAxisSize.max,
             children: <Widget>[
               Container(
+                margin: EdgeInsets.fromLTRB(0, 0, 0, 20),
                 child: _eventCard,
               ),
+              Row(
+                children: [
+                  Container(
+                    margin: EdgeInsets.fromLTRB(30, 5, 30, 5),
+                    child: Icon(Icons.article_rounded),
+                  ),
+                  Flexible(
+                    child: Container(
+                      child: Text(
+                        _eventExplanation,
+                        softWrap: true,
+                        style: TextStyle(fontSize: 15),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
               Container(
-                margin: EdgeInsets.all(20),
-                child: Text(
-                  _eventExplanation,
-                  style: TextStyle(fontSize: 15),
-                ),
+                margin: EdgeInsets.fromLTRB(10, 5, 10, 5),
+                child: new Divider(color: Colors.black),
               ),
               Row(
                 mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
+                  Container(
+                    margin: EdgeInsets.fromLTRB(30, 0, 30, 0),
+                    child: Icon(Icons.supervised_user_circle),
+                  ),
                   Column(
                     mainAxisSize: MainAxisSize.max,
                     mainAxisAlignment: MainAxisAlignment.center,
