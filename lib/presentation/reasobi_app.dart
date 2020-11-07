@@ -25,7 +25,7 @@ class _ReasobiAppState extends State<ReasobiApp> {
       final Uri deepLink = dynamicLink?.link;
 
       if (deepLink != null) {
-        await Future.delayed(Duration(seconds: 6));
+        await Future.delayed(Duration(seconds: 4));
         String invitedId = deepLink.queryParameters["id"];
         prefs.setString(inviteKey, invitedId);
         Navigator.pushNamed(context, "/invite");
@@ -39,7 +39,7 @@ class _ReasobiAppState extends State<ReasobiApp> {
     final Uri deepLink = data?.link;
 
     if (deepLink != null) {
-      await Future.delayed(Duration(seconds: 6));
+      await Future.delayed(Duration(seconds: 4));
       final String invitedId = deepLink.queryParameters["id"];
       prefs.setString(inviteKey, invitedId);
       Navigator.pushNamed(context, '/invite');
