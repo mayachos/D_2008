@@ -142,7 +142,8 @@ class _InviteScreenState extends State<InviteScreen> {
                       .then((dynamicLink) {
                     debugPrint(dynamicLink.toString());
                     TwitterRequest(prefs: prefs)
-                        .postTweet(dynamicLink.toString())
+                        .postTweet(
+                            "● ${title}\n${detail}\n${target}\n#REASOBI\n${dynamicLink}")
                         .then(
                           (_) => Navigator.pushNamedAndRemoveUntil(
                               context, "/home", (route) => false),
