@@ -8,6 +8,7 @@ class InviteEntity {
   final String target;
   final String status;
   final List<dynamic> participants;
+  final List<dynamic> participantsUid;
 
   InviteEntity({
     this.id,
@@ -19,6 +20,7 @@ class InviteEntity {
     this.target,
     this.status,
     this.participants,
+    this.participantsUid,
   });
 
   factory InviteEntity.fromData(Map<String, dynamic> data, String dataId) {
@@ -53,6 +55,7 @@ class InviteEntity {
       target: data["target"],
       status: status,
       participants: data["usersInfo"],
+      participantsUid: data["participantsUid"],
     );
   }
 }

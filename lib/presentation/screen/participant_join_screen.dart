@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:d_2008/di/get_it.dart';
 import 'package:d_2008/domain/entity/invite_entity.dart';
 import 'package:d_2008/presentation/screen/home_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -13,8 +15,8 @@ class ParticipantJoin extends StatefulWidget {
 
 class _State extends State<ParticipantJoin> {
   EventCard _eventCard;
-  String _eventExplanation;
-  String _withWho;
+  String _eventExplanation = "";
+  String _withWho = "";
   InviteEntity entity;
 
   @override
@@ -22,18 +24,6 @@ class _State extends State<ParticipantJoin> {
     super.initState();
     fetchData();
   }
-
-  Widget _joinButton = new RaisedButton(
-    child: Container(
-      padding: EdgeInsets.all(10),
-      child: Text("Join"),
-    ),
-    color: Color(0xffFFEB3B),
-    textColor: Colors.black54,
-
-    // TODO: joinButtonの動作
-    onPressed: () {},
-  );
 
   @override
   Widget build(BuildContext context) {
@@ -80,7 +70,7 @@ class _State extends State<ParticipantJoin> {
               ),
               SpaceBox.height(30),
               Center(
-                child: _joinButton,
+                child: JoinButton(context, entity).build(),
               ),
             ],
           ),
@@ -120,4 +110,33 @@ class SpaceBox extends SizedBox {
 
   SpaceBox.width([double value = 8]) : super(width: value);
   SpaceBox.height([double value = 8]) : super(height: value);
+}
+
+class JoinButton {
+  final BuildContext context;
+  final InviteEntity entity;
+  JoinButton(this.context, this.entity);
+
+  Widget build() {
+    return RaisedButton(
+      child: Container(
+        padding: EdgeInsets.all(10),
+        child: Text("Join"),
+      ),
+      color: Color(0xffFFEB3B),
+      textColor: Colors.black54,
+      onPressed: () {
+        if (entity != null) {
+          User currentUser = getItInstance.get<User>();
+          if (!entity.participantsUid.contains(currentUser.providerData.first.uid)) {
+            debugPrint("test");
+          } else {
+            Navigator.pop(context);
+          }
+        } else {
+          Navigator.pop(context);
+        }
+      },
+    );
+  }
 }
