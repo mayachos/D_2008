@@ -112,13 +112,11 @@ class _State extends State<ParticipantJoin> {
                 ],
               ),
               SpaceBox.height(30),
-              !isOwner
-                  ? Container(
-                      child: Center(
-                        child: JoinButton(context, entity).build(),
-                      ),
-                    )
-                  : Container(),
+              Container(
+                child: Center(
+                  child: JoinButton(context, entity).build(),
+                ),
+              ),
               SizedBox(height: 20),
               isOwner
                   ? Expanded(
@@ -177,59 +175,76 @@ class JoinButton {
   JoinButton(this.context, this.entity);
 
   Widget build() {
+    User currentUser = getItInstance<User>();
+    String buttonText = "";
+    bool isOwner = true;
+    // 参加者
+    if (currentUser.providerData.first.uid != entity.ownerId) {
+      isOwner = false;
+      buttonText = "Join";
+    } else {
+      isOwner = true;
+      buttonText = "Close";
+    }
     return RaisedButton(
       child: Container(
         padding: EdgeInsets.all(10),
-        child: Text("Join"),
+        child: Text(buttonText),
       ),
       color: Color(0xffFFEB3B),
       textColor: Colors.black54,
       onPressed: () {
         try {
           if (entity != null) {
-            User currentUser = getItInstance.get<User>();
-            if (!entity.participantsUid.contains(currentUser.providerData.first.photoURL)) {
-              UserInfo info = currentUser.providerData.first;
-              // 更新
-              DocumentReference inviteRef = FirebaseFirestore.instance.doc("/invites/${entity.id}");
-              List<String> userIds = entity.participantsUid.map((e) => e.toString()).toList();
-              userIds.add(info.uid);
-              List<Map<String, dynamic>> participants = [];
+            if (!isOwner) {
+              User currentUser = getItInstance.get<User>();
+              if (!entity.participantsUid.contains(currentUser.providerData.first.uid)) {
+                UserInfo info = currentUser.providerData.first;
+                // 更新
+                DocumentReference inviteRef = FirebaseFirestore.instance.doc("/invites/${entity.id}");
+                List<String> userIds = entity.participantsUid.map((e) => e.toString()).toList();
+                userIds.add(info.uid);
+                List<Map<String, dynamic>> participants = [];
 
-              entity.participants.forEach((element) {
-                participants.add(element);
-              });
-              participants.addAll({
-                {
-                  "uid": info.uid,
-                  "displayName": info.displayName,
-                  "photoURL": info.photoURL,
-                }
-              });
-
-              // 取得, パスを取得, 削除, ポスト
-              inviteRef.get().then((DocumentSnapshot snapshot) {
-                inviteRef.delete().then((_) {
-                  DocumentReference dRef = FirebaseFirestore.instance.collection('invites').doc('${snapshot.id}');
-                  dRef.set({
-                    'ownerId': snapshot.data()["ownerId"].toString(),
-                    'ownerName': snapshot.data()["ownerName"].toString(),
-                    'ownerPhotoURL': snapshot.data()["ownerPhotoURL"].toString(),
-                    'title': snapshot.data()["title"].toString(),
-                    'detail': snapshot.data()["detail"].toString(),
-                    'target': snapshot.data()["target"].toString(),
-                    'participantsRef': snapshot.data()["participantsRef"].toString(),
-                    'participantsUid': userIds,
-                    'usersInfo': participants,
-                    'expulsionUserUid': [],
-                    'isOpen': true,
-                    'isClosed': false,
-                  }).then((_) => Navigator.pop(context));
+                entity.participants.forEach((element) {
+                  participants.add(element);
                 });
-              }).catchError((onError) {
-                debugPrint(onError.toString());
-              });
+                participants.addAll({
+                  {
+                    "uid": info.uid,
+                    "displayName": info.displayName,
+                    "photoURL": info.photoURL,
+                  }
+                });
+
+                // 取得, パスを取得, 削除, ポスト
+                inviteRef.get().then((DocumentSnapshot snapshot) {
+                  inviteRef.delete().then((_) {
+                    DocumentReference dRef = FirebaseFirestore.instance.collection('invites').doc('${snapshot.id}');
+                    dRef.set({
+                      'ownerId': snapshot.data()["ownerId"].toString(),
+                      'ownerName': snapshot.data()["ownerName"].toString(),
+                      'ownerPhotoURL': snapshot.data()["ownerPhotoURL"].toString(),
+                      'title': snapshot.data()["title"].toString(),
+                      'detail': snapshot.data()["detail"].toString(),
+                      'target': snapshot.data()["target"].toString(),
+                      'participantsRef': snapshot.data()["participantsRef"].toString(),
+                      'participantsUid': userIds,
+                      'usersInfo': participants,
+                      'expulsionUserUid': [],
+                      'isOpen': true,
+                      'isClosed': false,
+                    }).then((_) => Navigator.pushNamedAndRemoveUntil(context, "/home", (route) => false));
+                  });
+                }).catchError((onError) {
+                  debugPrint(onError.toString());
+                });
+              } else {
+                Navigator.pop(context);
+              }
             } else {
+              DocumentReference inviteRef = FirebaseFirestore.instance.doc("/invites/${entity.id}");
+              inviteRef.update({"isClosed": true, "isOpen": false});
               Navigator.pop(context);
             }
           } else {

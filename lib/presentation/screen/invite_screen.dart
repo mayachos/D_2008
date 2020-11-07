@@ -42,8 +42,7 @@ class _InviteScreenState extends State<InviteScreen> {
             margin: EdgeInsets.fromLTRB(0, 10, 10, 10),
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              image: DecorationImage(
-                  fit: BoxFit.cover, image: NetworkImage(photoURL)
+              image: DecorationImage(fit: BoxFit.cover, image: NetworkImage(photoURL)
                   // image: NetworkImage("https://abs.twimg.com/sticky/default_profile_images/default_profile_normal.png")
                   ),
             ),
@@ -97,13 +96,9 @@ class _InviteScreenState extends State<InviteScreen> {
                 // TODO: loadingの実装
                 final User currentUser = getItInstance.get<User>();
                 final UserInfo userInfo = currentUser.providerData.first;
-                final SharedPreferences prefs =
-                    await SharedPreferences.getInstance();
-                CollectionReference invitesRef =
-                    FirebaseFirestore.instance.collection('invites');
-                DocumentReference userRef = FirebaseFirestore.instance
-                    .collection('users')
-                    .doc(userInfo.uid);
+                final SharedPreferences prefs = await SharedPreferences.getInstance();
+                CollectionReference invitesRef = FirebaseFirestore.instance.collection('invites');
+                DocumentReference userRef = FirebaseFirestore.instance.collection('users').doc(userInfo.uid);
                 debugPrint(currentUser.providerData.toString());
 
                 String title = titleController.text;
@@ -136,16 +131,13 @@ class _InviteScreenState extends State<InviteScreen> {
                   'isClosed': false,
                 }).then((DocumentReference ref) {
                   debugPrint("id: ${ref.path.split("/").last}");
-                  DynamicLinkService()
-                      .createInviteDynamicLink(
-                          inviteId: ref.path.split("/").last)
-                      .then((dynamicLink) {
+                  DynamicLinkService().createInviteDynamicLink(inviteId: ref.path.split("/").last).then((dynamicLink) {
                     debugPrint(dynamicLink.toString());
-                    TwitterRequest(prefs: prefs)
-                        .postTweet(dynamicLink.toString())
-                        .then(
-                          (_) => Navigator.pushNamedAndRemoveUntil(
-                              context, "/home", (route) => false),
+
+                    // TODO: ここで文字列を生成
+
+                    TwitterRequest(prefs: prefs).postTweet(dynamicLink.toString()).then(
+                          (_) => Navigator.pushNamedAndRemoveUntil(context, "/home", (route) => false),
                         );
                   });
                 }).catchError((error) => print("Failed to add user: $error"));
