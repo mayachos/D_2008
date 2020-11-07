@@ -240,18 +240,18 @@ class JoinButton {
                   debugPrint(onError.toString());
                 });
               } else {
-                Navigator.pop(context);
+                Navigator.pushNamedAndRemoveUntil(context, "/home", (route) => false);
               }
             } else {
               DocumentReference inviteRef = FirebaseFirestore.instance.doc("/invites/${entity.id}");
               inviteRef.update({"isClosed": true, "isOpen": false});
-              Navigator.pop(context);
+              Navigator.pushNamedAndRemoveUntil(context, "/home", (route) => false);
             }
           } else {
-            Navigator.pop(context);
+            Navigator.pushNamedAndRemoveUntil(context, "/home", (route) => false);
           }
         } catch (error) {
-          Navigator.canPop(context);
+          Navigator.pushNamedAndRemoveUntil(context, "/home", (route) => false);
         }
       },
     );

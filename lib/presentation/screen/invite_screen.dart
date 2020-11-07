@@ -96,13 +96,9 @@ class _InviteScreenState extends State<InviteScreen> {
                 // TODO: loadingの実装
                 final User currentUser = getItInstance.get<User>();
                 final UserInfo userInfo = currentUser.providerData.first;
-                final SharedPreferences prefs =
-                    await SharedPreferences.getInstance();
-                CollectionReference invitesRef =
-                    FirebaseFirestore.instance.collection('invites');
-                DocumentReference userRef = FirebaseFirestore.instance
-                    .collection('users')
-                    .doc(userInfo.uid);
+                final SharedPreferences prefs = await SharedPreferences.getInstance();
+                CollectionReference invitesRef = FirebaseFirestore.instance.collection('invites');
+                DocumentReference userRef = FirebaseFirestore.instance.collection('users').doc(userInfo.uid);
                 debugPrint(currentUser.providerData.toString());
 
                 String title = titleController.text;
@@ -135,16 +131,12 @@ class _InviteScreenState extends State<InviteScreen> {
                   'isClosed': false,
                 }).then((DocumentReference ref) {
                   debugPrint("id: ${ref.path.split("/").last}");
-                  DynamicLinkService()
-                      .createInviteDynamicLink(
-                          inviteId: ref.path.split("/").last)
-                      .then((dynamicLink) {
+                  DynamicLinkService().createInviteDynamicLink(inviteId: ref.path.split("/").last).then((dynamicLink) {
                     debugPrint(dynamicLink.toString());
                     TwitterRequest(prefs: prefs)
-                        .postTweet(dynamicLink.toString())
+                        .postTweet("▽ ${title} ▽\n${detail}\n@ ${target}\n\n${dynamicLink}\n#REASOBI")
                         .then(
-                          (_) => Navigator.pushNamedAndRemoveUntil(
-                              context, "/home", (route) => false),
+                          (_) => Navigator.pushNamedAndRemoveUntil(context, "/home", (route) => false),
                         );
                   });
                 }).catchError((error) => print("Failed to add user: $error"));
