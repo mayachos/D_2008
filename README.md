@@ -1,5 +1,5 @@
 # d_2008 teamname JAPAOHACK 【REASOBI】
-[![IMAGE ALT TEXT HERE](https://jphacks.com/wp-content/uploads/2020/09/JPHACKS2020_ogp.jpg)](https://www.youtube.com/watch?v=G5rULR53uMk)
+[![IMAGE ALT TEXT HERE](https://www.dropbox.com/sh/rp44ad0qvzdfwhv/AABJl8evqikn51057JuK2Cvga/02__Design/デザイン構想?dl=0&preview=reasobiラフ.png&subfolder_nav_tracking=1)](https://youtu.be/0VTyzFk-qgc)
 ## 製品概要
 「繋がり」から遊ぶ予定を創り出すアプリ REASOBI
 ### 背景(製品開発のきっかけ、課題等）
