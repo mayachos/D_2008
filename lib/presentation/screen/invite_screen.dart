@@ -27,8 +27,10 @@ class _InviteScreenState extends State<InviteScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomPadding: false,
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        title: Text("REASOBI"),
+        title: Text("Create ASOBI"),
       ),
       body: SafeArea(
         child: Container(
@@ -48,13 +50,20 @@ class _InviteScreenState extends State<InviteScreen> {
                 ),
                 SizedBox(height: 16),
                 TextField(
-                  decoration: InputDecoration(hintText: '詳細'),
+                  decoration: InputDecoration(
+                    labelText: 'やりたいこと・日付・場所を簡潔に',
+                    labelStyle: TextStyle(color: Colors.black38),
+                  ),
                   controller: detailController,
                   maxLength: 60,
+                  maxLines: 3,
                   maxLengthEnforced: true,
                 ),
                 TextField(
-                  decoration: InputDecoration(hintText: '対象'),
+                  decoration: InputDecoration(
+                    labelText: 'それは誰とやりますか？',
+                    labelStyle: TextStyle(color: Colors.black38),
+                  ),
                   controller: targetController,
                   maxLength: 15,
                   maxLengthEnforced: true,
