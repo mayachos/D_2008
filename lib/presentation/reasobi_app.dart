@@ -26,15 +26,9 @@ class _ReasobiAppState extends State<ReasobiApp> {
 
       if (deepLink != null) {
         await Future.delayed(Duration(seconds: 4));
-        bool isLoggedIn = prefs.getBool(loggedIn);
-        if (isLoggedIn == null) {
-          isLoggedIn = false;
-        }
-        if (isLoggedIn) {
-          String invitedId = deepLink.queryParameters["id"];
-          prefs.setString(inviteKey, invitedId);
-          Navigator.pushNamed(context, "/invite");
-        }
+        String invitedId = deepLink.queryParameters["id"];
+        prefs.setString(inviteKey, invitedId);
+        Navigator.pushNamed(context, "/invite");
       }
     }, onError: (OnLinkErrorException e) async {
       print('onLinkError');
@@ -46,15 +40,9 @@ class _ReasobiAppState extends State<ReasobiApp> {
 
     if (deepLink != null) {
       await Future.delayed(Duration(seconds: 4));
-      bool isLoggedIn = prefs.getBool(loggedIn);
-      if (isLoggedIn == null) {
-        isLoggedIn = false;
-      }
-      if (isLoggedIn) {
-        final String invitedId = deepLink.queryParameters["id"];
-        prefs.setString(inviteKey, invitedId);
-        Navigator.pushNamed(context, '/invite');
-      }
+      final String invitedId = deepLink.queryParameters["id"];
+      prefs.setString(inviteKey, invitedId);
+      Navigator.pushNamed(context, '/invite');
     }
   }
 

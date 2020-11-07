@@ -5,8 +5,10 @@ class InviteEntity {
   final String ownerPhotoURL;
   final String title;
   final String detail;
+  final String target;
   final String status;
   final List<dynamic> participants;
+  final List<dynamic> participantsUid;
 
   InviteEntity({
     this.id,
@@ -15,8 +17,10 @@ class InviteEntity {
     this.ownerPhotoURL,
     this.title,
     this.detail,
+    this.target,
     this.status,
     this.participants,
+    this.participantsUid,
   });
 
   factory InviteEntity.fromData(Map<String, dynamic> data, String dataId) {
@@ -24,12 +28,21 @@ class InviteEntity {
     bool isClosed = data["isClosed"];
     bool isOpen = data["isOpen"];
     if (isOpen) {
-      status = "募集中";
-    }
-    if (isClosed) {
-      status = "締め切り";
+      if (isClosed) {
+        // 参加
+        status = "2";
+      } else {
+        // 募集中
+        status = "1";
+      }
     } else {
-      status = "キャンセル";
+      if (isClosed) {
+        // 締め切り
+        status = "3";
+      } else {
+        // キャンセル
+        status = "4";
+      }
     }
 
     return InviteEntity(
@@ -39,8 +52,10 @@ class InviteEntity {
       ownerPhotoURL: data["ownerPhotoURL"],
       title: data["title"],
       detail: data["detail"],
+      target: data["target"],
       status: status,
       participants: data["usersInfo"],
+      participantsUid: data["participantsUid"],
     );
   }
 }

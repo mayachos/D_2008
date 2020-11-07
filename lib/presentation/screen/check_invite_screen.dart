@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:d_2008/constants.dart';
 import 'package:d_2008/di/get_it.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';i
+import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class CheckInviteScreen extends StatefulWidget {
@@ -19,27 +19,19 @@ class _CheckInviteScreenState extends State<CheckInviteScreen> {
   List<dynamic> users = [];
 
   @override
+  void initState() {
+    super.initState();
+    getData();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text("REASOBI"),
       ),
       body: SafeArea(
-        child: Container(
-          child: SingleChildScrollView(
-            child: Column(
-              children: <Widget>[
-                SizedBox(height: 20),
-                Card(
-                  child: Container(
-                    height: 200,
-                  ),
-                ),
-                SizedBox(height: 20),
-              ],
-            ),
-          ),
-        ),
+        child: Container(),
       ),
     );
   }
@@ -52,13 +44,13 @@ class _CheckInviteScreenState extends State<CheckInviteScreen> {
     } else {
       path = inviteId;
     }
-    prefs.remove(inviteKey);
-
     DocumentReference inviteRef = FirebaseFirestore.instance.doc("/invites/$path");
     inviteRef.get().then((DocumentSnapshot snapShot) {
       snapShot.data().forEach((key, value) {
         debugPrint("key: $key");
         debugPrint("value: $value");
+        // TODO: IDをみて条件分岐
+        Navigator.pushReplacementNamed(context, "/ParticipantJoin");
       });
     });
   }
