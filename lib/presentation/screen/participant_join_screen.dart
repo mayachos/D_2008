@@ -8,7 +8,6 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../constants.dart';
-
 import '../../di/get_it.dart';
 
 class ParticipantJoin extends StatefulWidget {
@@ -20,7 +19,7 @@ class _State extends State<ParticipantJoin> {
   EventCard _eventCard;
   String _eventExplanation = "";
   String _withWho = "";
-  InviteEntity entity;
+  InviteEntity entity = InviteEntity();
   List<MemberCard> memberList = [];
 
   @override
@@ -31,7 +30,12 @@ class _State extends State<ParticipantJoin> {
 
   @override
   Widget build(BuildContext context) {
-    User currentUser = getItInstance.get<User>();
+    User currentUser = getItInstance<User>();
+    String buttonText = "";
+    bool isOwner = true;
+    if (currentUser.providerData.first.uid != entity.ownerId) {
+      isOwner = false;
+    }
     String photoURL = currentUser.providerData.first.photoURL;
     return Scaffold(
       appBar: AppBar(
@@ -46,8 +50,7 @@ class _State extends State<ParticipantJoin> {
             margin: EdgeInsets.fromLTRB(0, 10, 10, 10),
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              image: DecorationImage(
-                  fit: BoxFit.cover, image: NetworkImage(photoURL)
+              image: DecorationImage(fit: BoxFit.cover, image: NetworkImage(photoURL)
                   // image: NetworkImage("https://abs.twimg.com/sticky/default_profile_images/default_profile_normal.png")
                   ),
             ),
@@ -109,20 +112,24 @@ class _State extends State<ParticipantJoin> {
                 ],
               ),
               SpaceBox.height(30),
-              Container(
-                child: Center(
-                  child: JoinButton(context, entity).build(),
-                ),
-              ),
+              !isOwner
+                  ? Container(
+                      child: Center(
+                        child: JoinButton(context, entity).build(),
+                      ),
+                    )
+                  : Container(),
               SizedBox(height: 20),
-              Expanded(
-                child: ListView.builder(
-                  itemCount: memberList.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    return memberList[index];
-                  },
-                ),
-              ),
+              isOwner
+                  ? Expanded(
+                      child: ListView.builder(
+                        itemCount: memberList.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          return memberList[index];
+                        },
+                      ),
+                    )
+                  : Container(),
             ],
           ),
         ),
