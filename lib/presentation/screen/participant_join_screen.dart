@@ -3,6 +3,7 @@ import 'package:d_2008/di/get_it.dart';
 import 'package:d_2008/domain/entity/invite_entity.dart';
 import 'package:d_2008/presentation/screen/home_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -100,7 +101,7 @@ class _State extends State<ParticipantJoin> {
         _withWho = item.target;
       });
     }).catchError((onError) {
-      Navigator.pop(context);
+      Navigator.canPop(context);
     });
   }
 }
@@ -126,15 +127,58 @@ class JoinButton {
       color: Color(0xffFFEB3B),
       textColor: Colors.black54,
       onPressed: () {
-        if (entity != null) {
-          User currentUser = getItInstance.get<User>();
-          if (!entity.participantsUid.contains(currentUser.providerData.first.uid)) {
-            debugPrint("test");
+        try {
+          if (entity != null) {
+            User currentUser = getItInstance.get<User>();
+            if (!entity.participantsUid.contains(currentUser.providerData.first.photoURL)) {
+              UserInfo info = currentUser.providerData.first;
+              // 更新
+              DocumentReference inviteRef = FirebaseFirestore.instance.doc("/invites/${entity.id}");
+              List<String> userIds = entity.participantsUid.map((e) => e.toString()).toList();
+              userIds.add(info.uid);
+              List<Map<String, dynamic>> participants = [];
+
+              entity.participants.forEach((element) {
+                participants.add(element);
+              });
+              participants.addAll({
+                {
+                  "uid": info.uid,
+                  "displayName": info.displayName,
+                  "photoURL": info.photoURL,
+                }
+              });
+
+              // 取得, パスを取得, 削除, ポスト
+              inviteRef.get().then((DocumentSnapshot snapshot) {
+                inviteRef.delete().then((_) {
+                  DocumentReference dRef = FirebaseFirestore.instance.collection('invites').doc('${snapshot.id}');
+                  dRef.set({
+                    'ownerId': snapshot.data()["ownerId"].toString(),
+                    'ownerName': snapshot.data()["ownerName"].toString(),
+                    'ownerPhotoURL': snapshot.data()["ownerPhotoURL"].toString(),
+                    'title': snapshot.data()["title"].toString(),
+                    'detail': snapshot.data()["detail"].toString(),
+                    'target': snapshot.data()["target"].toString(),
+                    'participantsRef': snapshot.data()["participantsRef"].toString(),
+                    'participantsUid': userIds,
+                    'usersInfo': participants,
+                    'expulsionUserUid': [],
+                    'isOpen': true,
+                    'isClosed': false,
+                  }).then((_) => Navigator.pop(context));
+                });
+              }).catchError((onError) {
+                debugPrint(onError.toString());
+              });
+            } else {
+              Navigator.pop(context);
+            }
           } else {
             Navigator.pop(context);
           }
-        } else {
-          Navigator.pop(context);
+        } catch (error) {
+          Navigator.canPop(context);
         }
       },
     );

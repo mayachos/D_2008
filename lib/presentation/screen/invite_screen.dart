@@ -93,6 +93,11 @@ class _InviteScreenState extends State<InviteScreen> {
                       "uid": userInfo.uid,
                       "displayName": userInfo.displayName,
                       "photoURL": userInfo.photoURL,
+                    },
+                    {
+                      "uid": userInfo.uid,
+                      "displayName": userInfo.displayName,
+                      "photoURL": userInfo.photoURL,
                     }
                   ],
                   'expulsionUserUid': [],
