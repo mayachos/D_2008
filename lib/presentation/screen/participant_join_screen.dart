@@ -9,6 +9,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../constants.dart';
 
+import '../../di/get_it.dart';
+
 class ParticipantJoin extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => _State();
@@ -29,11 +31,28 @@ class _State extends State<ParticipantJoin> {
 
   @override
   Widget build(BuildContext context) {
+    User currentUser = getItInstance.get<User>();
+    String photoURL = currentUser.providerData.first.photoURL;
     return Scaffold(
       appBar: AppBar(
         leading: Container(),
         centerTitle: true,
         title: Text("詳細"),
+        actions: [
+          Container(
+            //userPicture
+            width: 40.0,
+            height: 40.0,
+            margin: EdgeInsets.fromLTRB(0, 10, 10, 10),
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              image: DecorationImage(
+                  fit: BoxFit.cover, image: NetworkImage(photoURL)
+                  // image: NetworkImage("https://abs.twimg.com/sticky/default_profile_images/default_profile_normal.png")
+                  ),
+            ),
+          ),
+        ],
       ),
       body: Container(
         margin: EdgeInsets.fromLTRB(15, 10, 15, 10),
@@ -42,19 +61,38 @@ class _State extends State<ParticipantJoin> {
             mainAxisSize: MainAxisSize.max,
             children: <Widget>[
               Container(
+                margin: EdgeInsets.fromLTRB(0, 0, 0, 20),
                 child: _eventCard,
               ),
+              Row(
+                children: [
+                  Container(
+                    margin: EdgeInsets.fromLTRB(30, 5, 30, 5),
+                    child: Icon(Icons.article_rounded),
+                  ),
+                  Flexible(
+                    child: Container(
+                      child: Text(
+                        _eventExplanation,
+                        softWrap: true,
+                        style: TextStyle(fontSize: 15),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
               Container(
-                margin: EdgeInsets.all(20),
-                child: Text(
-                  _eventExplanation,
-                  style: TextStyle(fontSize: 15),
-                ),
+                margin: EdgeInsets.fromLTRB(10, 5, 10, 5),
+                child: new Divider(color: Colors.black),
               ),
               Row(
                 mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
+                  Container(
+                    margin: EdgeInsets.fromLTRB(30, 0, 30, 0),
+                    child: Icon(Icons.supervised_user_circle),
+                  ),
                   Column(
                     mainAxisSize: MainAxisSize.max,
                     mainAxisAlignment: MainAxisAlignment.center,

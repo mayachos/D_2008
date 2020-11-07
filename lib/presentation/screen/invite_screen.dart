@@ -26,9 +26,29 @@ class _InviteScreenState extends State<InviteScreen> {
 
   @override
   Widget build(BuildContext context) {
+    User currentUser = getItInstance.get<User>();
+    String photoURL = currentUser.providerData.first.photoURL;
+
     return Scaffold(
+      resizeToAvoidBottomPadding: false,
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        title: Text("REASOBI"),
+        title: Text("Create ASOBI"),
+        actions: [
+          Container(
+            //userPicture
+            width: 40.0,
+            height: 40.0,
+            margin: EdgeInsets.fromLTRB(0, 10, 10, 10),
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              image: DecorationImage(
+                  fit: BoxFit.cover, image: NetworkImage(photoURL)
+                  // image: NetworkImage("https://abs.twimg.com/sticky/default_profile_images/default_profile_normal.png")
+                  ),
+            ),
+          ),
+        ],
       ),
       body: SafeArea(
         child: Container(
@@ -48,13 +68,20 @@ class _InviteScreenState extends State<InviteScreen> {
                 ),
                 SizedBox(height: 16),
                 TextField(
-                  decoration: InputDecoration(hintText: '詳細'),
+                  decoration: InputDecoration(
+                    labelText: 'やりたいこと・日付・場所を簡潔に',
+                    labelStyle: TextStyle(color: Colors.black38, height: 0),
+                  ),
                   controller: detailController,
                   maxLength: 60,
+                  maxLines: 3,
                   maxLengthEnforced: true,
                 ),
                 TextField(
-                  decoration: InputDecoration(hintText: '対象'),
+                  decoration: InputDecoration(
+                    labelText: 'それは誰とやりますか？',
+                    labelStyle: TextStyle(color: Colors.black38, height: 0),
+                  ),
                   controller: targetController,
                   maxLength: 15,
                   maxLengthEnforced: true,
@@ -70,9 +97,13 @@ class _InviteScreenState extends State<InviteScreen> {
                 // TODO: loadingの実装
                 final User currentUser = getItInstance.get<User>();
                 final UserInfo userInfo = currentUser.providerData.first;
-                final SharedPreferences prefs = await SharedPreferences.getInstance();
-                CollectionReference invitesRef = FirebaseFirestore.instance.collection('invites');
-                DocumentReference userRef = FirebaseFirestore.instance.collection('users').doc(userInfo.uid);
+                final SharedPreferences prefs =
+                    await SharedPreferences.getInstance();
+                CollectionReference invitesRef =
+                    FirebaseFirestore.instance.collection('invites');
+                DocumentReference userRef = FirebaseFirestore.instance
+                    .collection('users')
+                    .doc(userInfo.uid);
                 debugPrint(currentUser.providerData.toString());
 
                 String title = titleController.text;
@@ -105,10 +136,16 @@ class _InviteScreenState extends State<InviteScreen> {
                   'isClosed': false,
                 }).then((DocumentReference ref) {
                   debugPrint("id: ${ref.path.split("/").last}");
-                  DynamicLinkService().createInviteDynamicLink(inviteId: ref.path.split("/").last).then((dynamicLink) {
+                  DynamicLinkService()
+                      .createInviteDynamicLink(
+                          inviteId: ref.path.split("/").last)
+                      .then((dynamicLink) {
                     debugPrint(dynamicLink.toString());
-                    TwitterRequest(prefs: prefs).postTweet(dynamicLink.toString()).then(
-                          (_) => Navigator.pushNamedAndRemoveUntil(context, "/home", (route) => false),
+                    TwitterRequest(prefs: prefs)
+                        .postTweet(dynamicLink.toString())
+                        .then(
+                          (_) => Navigator.pushNamedAndRemoveUntil(
+                              context, "/home", (route) => false),
                         );
                   });
                 }).catchError((error) => print("Failed to add user: $error"));
